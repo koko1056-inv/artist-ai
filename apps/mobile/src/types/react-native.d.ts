@@ -50,6 +50,17 @@ declare module "react-native" {
 
   export interface SafeAreaViewProps extends ViewProps {}
 
+  /** Image source: a remote URI bag or a (bundler-provided) static asset id. */
+  export type ImageSourcePropType = { uri: string } | number;
+
+  export interface ImageProps {
+    source: ImageSourcePropType;
+    style?: StyleProp;
+    resizeMode?: "cover" | "contain" | "stretch" | "center" | "repeat";
+    accessibilityLabel?: string;
+    testID?: string;
+  }
+
   export interface FlatListProps<ItemT> {
     data: ReadonlyArray<ItemT> | null | undefined;
     renderItem: (info: { item: ItemT; index: number }) => React.ReactElement | null;
@@ -65,6 +76,7 @@ declare module "react-native" {
   // --- Components -----------------------------------------------------------
   export const View: React.ComponentType<ViewProps>;
   export const Text: React.ComponentType<TextProps>;
+  export const Image: React.ComponentType<ImageProps>;
   export const ScrollView: React.ComponentType<ScrollViewProps>;
   export const Pressable: React.ComponentType<PressableProps>;
   export const SafeAreaView: React.ComponentType<SafeAreaViewProps>;

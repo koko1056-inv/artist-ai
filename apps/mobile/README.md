@@ -69,6 +69,22 @@ The mobile app never collects payment in-app. Subscriptions are sold via **web c
 (Stripe)** to avoid the 15–30% store cut. `AccountScreen`'s "Manage subscription" opens the
 web billing portal in the system browser via `Linking`.
 
+## Licensed IP
+
+Listings carry a `licenseType` of `public-domain` or `licensed`. The Marketplace shows a
+license badge on every card, the listing `thumbnailUrl`, and — for licensed apps — the
+partner `creditLine` (e.g. `© Nova Pixel Studio`).
+
+When a licensed app is installed and opened, the host (not the untrusted creator bundle)
+renders that credit line in the sandbox header/about area and notes that the app is built
+on licensed IP. The creator bundle cannot suppress or forge the credit because it never
+has the surface to draw chrome outside its sandbox — this is enforced at the bridge
+boundary (`src/runtime/bridge.ts`).
+
+Royalties to the rights holder and the user's subscription are **reconciled server-side**;
+the mobile app never collects payment in-app and the bridge exposes no payment or licensing
+capability to creator code.
+
 ## Shared packages
 
 - `@pd/contracts` — `Listing`, `PdAsset`, `GenerateResponse` + zod schemas. Used to validate

@@ -23,6 +23,18 @@
  *     protocol, so the creator code calls an async proxy and the host executes natively.
  *   - For a Hermes/JS bundle: passed as a frozen object via the runtime's global, with
  *     each method wrapped so it can be revoked when the app is uninstalled.
+ *
+ * PROVENANCE / LICENSED IP
+ * ------------------------
+ * This boundary is also where the host enforces provenance and credit display. When an
+ * app is built on licensed IP (`Listing.licenseType === "licensed"`), the host — not the
+ * untrusted creator bundle — owns rendering the partner credit line (e.g. "© Nova Pixel
+ * Studio") in the app's header/about area (see `runtime/Sandbox.tsx`). The creator bundle
+ * cannot suppress, alter, or forge that credit because it never has the surface to draw
+ * chrome outside its sandbox. Royalties owed to the rights holder are likewise computed
+ * and reconciled server-side against the user's subscription; the bridge intentionally
+ * exposes no payment or licensing capability to creator code. No behavior change is needed
+ * here — this note documents that compliance boundary.
  */
 
 // --- Capability payload types -------------------------------------------------

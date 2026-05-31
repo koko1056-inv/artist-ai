@@ -68,6 +68,13 @@ export interface SandboxProps {
   /** Capabilities the host granted this app (declared by its template). */
   capabilities?: ReadonlyArray<Capability>;
   kind?: SandboxKind;
+  /**
+   * Provenance of the IP this app is built on. The host enforces credit display for
+   * "licensed" apps (see `runtime/bridge.ts`). Defaults to "public-domain".
+   */
+  licenseType?: "public-domain" | "licensed";
+  /** Partner credit line to display for licensed apps, e.g. "© Nova Pixel Studio". */
+  creditLine?: string;
 }
 
 /**
@@ -76,7 +83,16 @@ export interface SandboxProps {
  * navigation + install flow can be exercised end to end without a native runtime.
  */
 export function Sandbox(props: SandboxProps): React.ReactElement {
-  const { appId, bundleUrl, capabilities = ["storage"], kind = "webview" } = props;
+  const {
+    appId,
+    bundleUrl,
+    capabilities = ["storage"],
+    kind = "webview",
+    licenseType = "public-domain",
+    creditLine,
+  } = props;
+
+  const isLicensed = licenseType === "licensed";
 
   // The bridge is constructed once per app instance and is the ONLY capability surface.
   const bridge = React.useMemo<HostBridge>(
@@ -87,6 +103,15 @@ export function Sandbox(props: SandboxProps): React.ReactElement {
   return (
     <View style={styles.container} testID="sandbox-container">
       <Text style={styles.heading}>Isolated sandbox</Text>
+      {isLicensed ? (
+        <View style={styles.licenseBox} testID="sandbox-license">
+          {creditLine ? <Text style={styles.creditLine}>{creditLine}</Text> : null}
+          <Text style={styles.licenseNote}>
+            Built on licensed IP. Use of this app carries a royalty to the rights holder,
+            reconciled with your subscription server-side.
+          </Text>
+        </View>
+      ) : null}
       <Text style={styles.label}>App ID</Text>
       <Text style={styles.value}>{appId}</Text>
       <Text style={styles.label}>Runtime</Text>
@@ -116,4 +141,12 @@ const styles = StyleSheet.create({
   label: { color: "#8a93a6", fontSize: 12, marginTop: 10, textTransform: "uppercase" },
   value: { color: "#e6e9ef", fontSize: 14, marginTop: 2 },
   note: { color: "#8a93a6", fontSize: 12, marginTop: 20, lineHeight: 18 },
+  licenseBox: {
+    backgroundColor: "#1a1610",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+  },
+  creditLine: { color: "#d8c4a0", fontSize: 13, fontWeight: "600" },
+  licenseNote: { color: "#a89878", fontSize: 11, marginTop: 6, lineHeight: 16 },
 });

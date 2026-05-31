@@ -10,6 +10,7 @@ import * as React from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -118,8 +119,19 @@ function ListingCard(props: {
       ? "Free"
       : formatMoney(money(listing.priceMinor, toCurrencyCode(listing.currency)));
 
+  const isLicensed = listing.licenseType === "licensed";
+
   return (
     <View style={styles.card} testID={`listing-${listing.id}`}>
+      {listing.thumbnailUrl ? (
+        <Image
+          source={{ uri: listing.thumbnailUrl }}
+          style={styles.thumbnail}
+          resizeMode="cover"
+          accessibilityLabel={`${listing.title} thumbnail`}
+          testID={`thumbnail-${listing.id}`}
+        />
+      ) : null}
       <Text style={styles.title}>{listing.title}</Text>
       <Text style={styles.creator}>{t("marketplace.byCreator", { creator: listing.creatorName })}</Text>
       <Text style={styles.summary} numberOfLines={2}>
@@ -135,7 +147,19 @@ function ListingCard(props: {
             <Text style={styles.badgeText}>{t("provenance.aiAssisted")}</Text>
           </View>
         ) : null}
+        <View
+          style={[styles.badge, isLicensed ? styles.licensedBadge : styles.publicDomainBadge]}
+          testID={`license-badge-${listing.id}`}
+        >
+          <Text style={styles.badgeText}>{isLicensed ? "Licensed" : "Public domain"}</Text>
+        </View>
       </View>
+
+      {isLicensed && listing.creditLine ? (
+        <Text style={styles.creditLine} numberOfLines={1} testID={`credit-${listing.id}`}>
+          {listing.creditLine}
+        </Text>
+      ) : null}
 
       <Text style={styles.provenanceNotice} numberOfLines={2}>
         {listing.provenanceNotice}
@@ -175,6 +199,13 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
   },
+  thumbnail: {
+    width: "100%",
+    height: 140,
+    borderRadius: 8,
+    marginBottom: 10,
+    backgroundColor: "#0f1116",
+  },
   title: { color: "#ffffff", fontSize: 17, fontWeight: "700" },
   creator: { color: "#8a93a6", fontSize: 13, marginTop: 2 },
   summary: { color: "#c3c9d6", fontSize: 14, marginTop: 8 },
@@ -187,7 +218,10 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   aiBadge: { backgroundColor: "#3a2a4d" },
+  licensedBadge: { backgroundColor: "#4d3a22" },
+  publicDomainBadge: { backgroundColor: "#22463a" },
   badgeText: { color: "#cdd6ea", fontSize: 11 },
+  creditLine: { color: "#d8c4a0", fontSize: 11, marginTop: 8 },
   provenanceNotice: { color: "#6f7892", fontSize: 11, marginTop: 8 },
   cardFooter: {
     flexDirection: "row",

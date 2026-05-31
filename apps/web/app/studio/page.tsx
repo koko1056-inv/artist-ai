@@ -23,7 +23,7 @@ export default async function StudioPage() {
       <SectionTitle
         eyebrow="Studio"
         title="Create a daily-use app"
-        subtitle="Pick a template and a public-domain asset, describe your app, then generate and publish."
+        subtitle="Pick a template and an asset, browse its images and 3D models, describe your app, then generate and publish."
       />
       <StudioClient
         templates={templates}

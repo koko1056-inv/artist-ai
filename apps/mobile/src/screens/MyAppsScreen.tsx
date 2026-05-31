@@ -24,6 +24,13 @@ export interface InstalledApp {
   bundleUrl: string;
   /** Capabilities granted to this app (derived from its template). */
   capabilities: ReadonlyArray<Capability>;
+  /**
+   * Provenance of the IP this app is built on. "licensed" apps carry a royalty to the
+   * rights holder and the host must display the partner credit line (see `Sandbox`).
+   */
+  licenseType?: "public-domain" | "licensed";
+  /** Partner credit to display for licensed apps, e.g. "© Nova Pixel Studio". */
+  creditLine?: string;
 }
 
 export interface MyAppsScreenProps {
@@ -50,6 +57,8 @@ export function MyAppsScreen(props: MyAppsScreenProps): React.ReactElement {
           appId={openApp.appId}
           bundleUrl={openApp.bundleUrl}
           capabilities={openApp.capabilities}
+          licenseType={openApp.licenseType}
+          creditLine={openApp.creditLine}
         />
       </View>
     );
@@ -78,6 +87,11 @@ export function MyAppsScreen(props: MyAppsScreenProps): React.ReactElement {
           <View style={styles.rowText}>
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.creator}>by {item.creatorName}</Text>
+            {item.licenseType === "licensed" && item.creditLine ? (
+              <Text style={styles.credit} numberOfLines={1}>
+                {item.creditLine}
+              </Text>
+            ) : null}
           </View>
           <Text style={styles.openHint}>Open ›</Text>
         </Pressable>
@@ -106,5 +120,6 @@ const styles = StyleSheet.create({
   rowText: { flex: 1 },
   title: { color: "#ffffff", fontSize: 16, fontWeight: "600" },
   creator: { color: "#8a93a6", fontSize: 13, marginTop: 2 },
+  credit: { color: "#d8c4a0", fontSize: 11, marginTop: 2 },
   openHint: { color: "#5b8cff", fontSize: 14 },
 });

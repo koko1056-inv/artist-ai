@@ -6,7 +6,9 @@ import {
   MARKETPLACE_TAKE_RATE,
   money,
   splitSale,
+  splitSaleWithRoyalty,
   translate,
+  type Money,
   type UsageWindow,
 } from "@pd/core";
 import { Badge, Card, SectionTitle } from "../../components/ui";
@@ -26,21 +28,44 @@ export default function DashboardPage() {
       ? Math.min(100, Math.round((usage.aiSpendMinor / ceilingMinor) * 100))
       : 0;
 
-  // Revenue summary from sample purchases, split via the marketplace take rate.
+  // Revenue summary from sample purchases. Public-domain sales use the plain
+  // marketplace take rate; licensed sales (royaltyRate > 0) also split off an IP
+  // royalty to the rights holder via splitSaleWithRoyalty.
   let grossTotal = 0;
   let feeTotal = 0;
+  let royaltyTotal = 0;
   let payoutTotal = 0;
   const rows = SAMPLE_PURCHASES.map((p) => {
     const gross = money(p.grossMinor * p.count, p.currency);
-    const { platformFee, creatorPayout } = splitSale(gross, MARKETPLACE_TAKE_RATE);
+    let platformFee: Money;
+    let royalty: Money = money(0, p.currency);
+    let creatorPayout: Money;
+    if (p.royaltyRate > 0) {
+      const split = splitSaleWithRoyalty(
+        gross,
+        MARKETPLACE_TAKE_RATE,
+        p.royaltyRate,
+      );
+      platformFee = split.platformFee;
+      royalty = split.royalty;
+      creatorPayout = split.creatorPayout;
+    } else {
+      const split = splitSale(gross, MARKETPLACE_TAKE_RATE);
+      platformFee = split.platformFee;
+      creatorPayout = split.creatorPayout;
+    }
     grossTotal += gross.amountMinor;
     feeTotal += platformFee.amountMinor;
+    royaltyTotal += royalty.amountMinor;
     payoutTotal += creatorPayout.amountMinor;
     return {
       title: p.listingTitle,
       sales: p.count,
+      licensed: p.royaltyRate > 0,
+      royaltyRate: p.royaltyRate,
       gross: formatMoney(gross),
       fee: formatMoney(platformFee),
+      royalty: p.royaltyRate > 0 ? formatMoney(royalty) : "—",
       payout: formatMoney(creatorPayout),
     };
   });
@@ -130,26 +155,42 @@ export default function DashboardPage() {
         <h3 className="text-lg font-bold text-ink">Revenue summary</h3>
         <p className="mt-1 text-sm text-ink-soft">
           Marketplace take rate of {Math.round(MARKETPLACE_TAKE_RATE * 100)}% applied
-          per sale.
+          per sale. Licensed IP also pays a royalty to the rights holder.
         </p>
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[34rem] text-sm">
+          <table className="w-full min-w-[40rem] text-sm">
             <thead>
               <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-soft">
                 <th className="py-2 pr-4 font-semibold">App</th>
                 <th className="py-2 pr-4 font-semibold">Sales</th>
                 <th className="py-2 pr-4 font-semibold">Gross</th>
                 <th className="py-2 pr-4 font-semibold">Platform fee</th>
+                <th className="py-2 pr-4 font-semibold">IP royalty</th>
                 <th className="py-2 font-semibold">Your payout</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
                 <tr key={r.title} className="border-b border-line/70">
-                  <td className="py-2 pr-4 font-medium text-ink">{r.title}</td>
+                  <td className="py-2 pr-4 font-medium text-ink">
+                    {r.title}
+                    {r.licensed ? (
+                      <span className="ml-2 align-middle">
+                        <Badge tone="warn">Licensed</Badge>
+                      </span>
+                    ) : null}
+                  </td>
                   <td className="py-2 pr-4 text-ink-soft">{r.sales}</td>
                   <td className="py-2 pr-4 text-ink-soft">{r.gross}</td>
                   <td className="py-2 pr-4 text-ink-soft">{r.fee}</td>
+                  <td className="py-2 pr-4 text-ink-soft">
+                    {r.royalty}
+                    {r.licensed ? (
+                      <span className="ml-1 text-xs">
+                        ({Math.round(r.royaltyRate * 100)}%)
+                      </span>
+                    ) : null}
+                  </td>
                   <td className="py-2 font-semibold text-ink">{r.payout}</td>
                 </tr>
               ))}
@@ -162,6 +203,9 @@ export default function DashboardPage() {
                   {formatMoney(money(grossTotal, "USD"))}
                 </td>
                 <td className="py-2 pr-4">{formatMoney(money(feeTotal, "USD"))}</td>
+                <td className="py-2 pr-4">
+                  {formatMoney(money(royaltyTotal, "USD"))}
+                </td>
                 <td className="py-2">{formatMoney(money(payoutTotal, "USD"))}</td>
               </tr>
             </tfoot>

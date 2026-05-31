@@ -1,15 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { formatMoney, money, type TemplateId } from "@pd/core";
+import { useMemo, useState } from "react";
+import {
+  checkEligibility,
+  formatMoney,
+  getPlan,
+  mediaGroupOf,
+  money,
+  type MediaGroup,
+  type PlanId,
+  type TemplateId,
+} from "@pd/core";
 import type {
   ApiError,
+  AssetMedia,
   GenerateResponse,
   PdAsset,
   PublishResponse,
 } from "@pd/contracts";
 import { Badge, Card } from "../../components/ui";
 import { AssetThumb } from "../../components/asset-thumb";
+import { ModelViewer } from "../../components/model-viewer";
 
 interface TemplateOption {
   id: TemplateId;
@@ -34,6 +45,32 @@ function isApiError(x: unknown): x is ApiError {
   );
 }
 
+/** Demo market for eligibility checks (in production: the seller's market). */
+const DEMO_MARKET = "US";
+
+const MEDIA_TABS: Array<{ id: "all" | MediaGroup; label: string }> = [
+  { id: "all", label: "All" },
+  { id: "images", label: "Images" },
+  { id: "threeD", label: "3D" },
+  { id: "audio", label: "Audio" },
+];
+
+/** A license badge for an asset tile / panel. */
+function LicenseBadge({ asset }: { asset: PdAsset }) {
+  if (asset.license.type === "licensed") {
+    return (
+      <Badge tone="warn">
+        Licensed{asset.license.partnerName ? ` · ${asset.license.partnerName}` : ""}
+      </Badge>
+    );
+  }
+  return <Badge tone="success">Public domain</Badge>;
+}
+
+function percent(rate: number): string {
+  return `${Math.round(rate * 100)}%`;
+}
+
 export default function StudioClient({
   templates,
   assets,
@@ -41,11 +78,14 @@ export default function StudioClient({
   generateLabel,
   publishLabel,
 }: Props) {
+  const [planId, setPlanId] = useState<PlanId>("basic");
   const [templateId, setTemplateId] = useState<TemplateId>(
     templates[0]?.id ?? "task-manager",
   );
   const [assetId, setAssetId] = useState<string>(assets[0]?.id ?? "");
   const [prompt, setPrompt] = useState("");
+  const [mediaTab, setMediaTab] = useState<"all" | MediaGroup>("all");
+  const [selectedMediaIds, setSelectedMediaIds] = useState<string[]>([]);
 
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
@@ -58,16 +98,70 @@ export default function StudioClient({
   const [pubError, setPubError] = useState<string | null>(null);
   const [published, setPublished] = useState<PublishResponse | null>(null);
 
+  const asset = useMemo(
+    () => assets.find((a) => a.id === assetId),
+    [assets, assetId],
+  );
+
+  const eligibility = useMemo(() => {
+    if (!asset) return { eligible: true as const };
+    const l = asset.license;
+    return checkEligibility(
+      {
+        type: l.type,
+        royaltyRate: l.royaltyRate,
+        requiresApproval: l.requiresApproval,
+        allowedPlans: l.allowedPlans,
+        territories: l.territories,
+        expiresAt: l.expiresAt,
+      },
+      { planId, market: DEMO_MARKET },
+    );
+  }, [asset, planId]);
+
+  const visibleMedia = useMemo(() => {
+    const media = asset?.media ?? [];
+    if (mediaTab === "all") return media;
+    return media.filter((m) => mediaGroupOf(m.kind) === mediaTab);
+  }, [asset, mediaTab]);
+
+  function selectAsset(id: string) {
+    setAssetId(id);
+    setMediaTab("all");
+    setSelectedMediaIds([]);
+  }
+
+  function toggleMedia(id: string) {
+    setSelectedMediaIds((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
+    );
+  }
+
+  const eligibilityReason =
+    eligibility.reason === "plan-not-allowed"
+      ? "This licensed IP is not available on your current plan."
+      : eligibility.reason === "expired"
+        ? "This license has expired."
+        : eligibility.reason === "territory-not-allowed"
+          ? "This license is not available in your market."
+          : null;
+
   async function onGenerate() {
+    if (!asset) return;
     setGenerating(true);
     setGenError(null);
     setResult(null);
     setPublished(null);
     try {
+      // Default to all of the asset's media when nothing was explicitly chosen.
+      const mediaIds =
+        selectedMediaIds.length > 0
+          ? selectedMediaIds
+          : asset.media.map((m) => m.id);
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ prompt, templateId, assetId }),
+        body: JSON.stringify({ prompt, templateId, assetId, mediaIds }),
       });
       const data: unknown = await res.json();
       if (!res.ok || isApiError(data)) {
@@ -116,12 +210,42 @@ export default function StudioClient({
   }
 
   const promptValid = prompt.trim().length >= 10 && prompt.trim().length <= 2000;
+  const canGenerate =
+    !generating && promptValid && !!assetId && eligibility.eligible;
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Step 1: configure + generate */}
       <Card>
-        <h3 className="text-lg font-bold text-ink">1 · Build your app</h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-lg font-bold text-ink">1 · Build your app</h3>
+          {/* Demo plan switcher: flip to Pro to unlock licensed IP. */}
+          <div
+            className="inline-flex rounded-full border border-line bg-paper-2 p-0.5 text-xs font-semibold"
+            role="group"
+            aria-label="Demo plan"
+          >
+            {(["basic", "pro"] as const).map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPlanId(p)}
+                aria-pressed={planId === p}
+                className={`rounded-full px-3 py-1 capitalize transition-colors ${
+                  planId === p
+                    ? "bg-brand text-white"
+                    : "text-ink-soft hover:text-brand"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="mt-1 text-xs text-ink-soft">
+          Demo plan: <span className="font-semibold capitalize">{planId}</span>.
+          Licensed IP requires Pro or above.
+        </p>
 
         <label className="mt-4 block text-sm font-medium text-ink">
           Template
@@ -142,9 +266,7 @@ export default function StudioClient({
         </p>
 
         <fieldset className="mt-4">
-          <legend className="text-sm font-medium text-ink">
-            Public-domain asset
-          </legend>
+          <legend className="text-sm font-medium text-ink">Choose an asset</legend>
           <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {assets.map((a) => {
               const selected = a.id === assetId;
@@ -152,7 +274,7 @@ export default function StudioClient({
                 <button
                   key={a.id}
                   type="button"
-                  onClick={() => setAssetId(a.id)}
+                  onClick={() => selectAsset(a.id)}
                   aria-pressed={selected}
                   title={a.provenanceNotice}
                   className={`group overflow-hidden rounded-xl border text-left transition-all ${
@@ -167,18 +289,133 @@ export default function StudioClient({
                     alt={`${a.label} image`}
                     className="h-20 w-full object-cover"
                   />
-                  <span className="block px-2 py-1.5 text-xs font-medium text-ink">
+                  <span className="block px-2 pt-1.5 text-xs font-medium text-ink">
                     {a.label}
+                  </span>
+                  <span className="block px-2 pb-1.5 pt-1">
+                    <LicenseBadge asset={a} />
                   </span>
                 </button>
               );
             })}
           </div>
-          <p className="mt-1 text-xs text-ink-soft">
-            Illustrations are original, public-domain-safe motifs. The selected
-            asset&apos;s provenance notice is attached to anything you publish.
-          </p>
         </fieldset>
+
+        {/* License panel for the selected asset. */}
+        {asset ? (
+          <div className="mt-4 rounded-lg border border-line bg-paper-2 p-4 text-sm">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-semibold text-ink">{asset.label}</span>
+              <LicenseBadge asset={asset} />
+            </div>
+            {asset.license.type === "public-domain" ? (
+              <div className="mt-2 space-y-1 text-ink-soft">
+                <p>{asset.provenanceNotice}</p>
+                <p className="font-medium text-[color:var(--color-success)]">
+                  Free to use — no royalty, no approval needed.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-2 space-y-2 text-ink-soft">
+                <div className="flex items-center gap-2">
+                  {asset.license.partnerLogoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={asset.license.partnerLogoUrl}
+                      alt={`${asset.license.partnerName ?? "Partner"} logo`}
+                      className="h-6 w-6 rounded object-contain"
+                    />
+                  ) : null}
+                  <span className="font-medium text-ink">
+                    {asset.license.partnerName ?? "Licensed partner"}
+                  </span>
+                </div>
+                <ul className="ml-4 list-disc space-y-0.5">
+                  <li>Royalty rate: {percent(asset.license.royaltyRate)} of gross</li>
+                  {asset.license.requiresApproval ? (
+                    <li>Requires approval before publishing</li>
+                  ) : null}
+                  <li>
+                    Allowed plans:{" "}
+                    <span className="capitalize">
+                      {asset.license.allowedPlans.join(", ") || "—"}
+                    </span>
+                  </li>
+                  <li>Territories: {asset.license.territories.join(", ") || "—"}</li>
+                  {asset.license.expiresAt ? (
+                    <li>
+                      Expires:{" "}
+                      {new Date(asset.license.expiresAt).toLocaleDateString("en-US")}
+                    </li>
+                  ) : null}
+                </ul>
+                {!eligibility.eligible && eligibilityReason ? (
+                  <div className="rounded-md bg-[color:var(--color-warn)]/10 px-3 py-2 text-[color:var(--color-warn)]">
+                    <p className="font-medium">{eligibilityReason}</p>
+                    {eligibility.reason === "plan-not-allowed" ? (
+                      <button
+                        type="button"
+                        onClick={() => setPlanId("pro")}
+                        className="mt-1 font-semibold underline hover:no-underline"
+                      >
+                        Switch to Pro to use licensed IP
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {/* Media browser. */}
+        {asset ? (
+          <div className="mt-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-ink">Media</span>
+              <span className="text-xs text-ink-soft">
+                {selectedMediaIds.length > 0
+                  ? `${selectedMediaIds.length} selected`
+                  : "Defaults to all media"}
+              </span>
+            </div>
+            <div className="mt-2 inline-flex flex-wrap gap-1" role="tablist">
+              {MEDIA_TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={mediaTab === tab.id}
+                  onClick={() => setMediaTab(tab.id)}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                    mediaTab === tab.id
+                      ? "bg-brand text-white"
+                      : "bg-paper-2 text-ink-soft hover:text-brand"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {visibleMedia.length === 0 ? (
+              <p className="mt-3 text-xs text-ink-soft">
+                No media in this category.
+              </p>
+            ) : (
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {visibleMedia.map((m) => (
+                  <MediaTile
+                    key={m.id}
+                    media={m}
+                    selected={selectedMediaIds.includes(m.id)}
+                    onToggle={() => toggleMedia(m.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
 
         <label className="mt-4 block text-sm font-medium text-ink">
           Prompt
@@ -197,11 +434,17 @@ export default function StudioClient({
         <button
           type="button"
           onClick={onGenerate}
-          disabled={generating || !promptValid || !assetId}
+          disabled={!canGenerate}
           className="mt-4 w-full rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-strong disabled:cursor-not-allowed disabled:opacity-50"
         >
           {generating ? "Generating…" : generateLabel}
         </button>
+
+        {!eligibility.eligible && eligibilityReason ? (
+          <p className="mt-2 text-center text-xs text-[color:var(--color-warn)]">
+            Generation is disabled for this licensed asset on your current plan.
+          </p>
+        ) : null}
 
         {genError ? (
           <p className="mt-3 rounded-lg bg-[color:var(--color-danger)]/10 px-3 py-2 text-sm text-[color:var(--color-danger)]">
@@ -297,7 +540,7 @@ export default function StudioClient({
 
         {published ? (
           <div className="mt-4 space-y-2 rounded-lg bg-paper-2 p-4 text-sm">
-            <div>
+            <div className="flex flex-wrap items-center gap-2">
               {published.status === "published" ? (
                 <Badge tone="success">Published</Badge>
               ) : published.status === "in-review" ? (
@@ -305,11 +548,29 @@ export default function StudioClient({
               ) : (
                 <Badge tone="warn">Rejected</Badge>
               )}
+              {published.licenseType === "licensed" ? (
+                <Badge tone="warn">Licensed IP</Badge>
+              ) : null}
             </div>
             <p className="text-ink-soft">
               <span className="font-semibold text-ink">Required notice:</span>{" "}
               {published.requiredNotice}
             </p>
+            {published.licenseType === "licensed" ? (
+              <div className="rounded-md bg-[color:var(--color-warn)]/10 px-3 py-2 text-[color:var(--color-warn)]">
+                {published.creditLine ? (
+                  <p className="font-medium">{published.creditLine}</p>
+                ) : null}
+                <p>
+                  Royalty rate: {percent(published.royaltyRate)} of gross to the
+                  rights holder.
+                </p>
+                <p>
+                  Licensed IP requires partner approval — this app is in review
+                  before it goes live.
+                </p>
+              </div>
+            ) : null}
             {published.listingId ? (
               <p className="text-ink-soft">
                 <span className="font-semibold text-ink">Listing:</span>{" "}
@@ -332,5 +593,64 @@ export default function StudioClient({
         ) : null}
       </Card>
     </div>
+  );
+}
+
+/** A single selectable media tile (image / 3D / audio). */
+function MediaTile({
+  media,
+  selected,
+  onToggle,
+}: {
+  media: AssetMedia;
+  selected: boolean;
+  onToggle: () => void;
+}) {
+  const group = mediaGroupOf(media.kind);
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={selected}
+      className={`group flex flex-col overflow-hidden rounded-xl border text-left transition-all ${
+        selected
+          ? "border-brand ring-2 ring-brand"
+          : "border-line hover:border-brand/60"
+      }`}
+    >
+      <div className="h-24 w-full bg-paper-2">
+        {group === "threeD" ? (
+          <ModelViewer
+            src={media.url}
+            poster={media.posterUrl}
+            alt={media.label}
+            className="h-full w-full"
+          />
+        ) : group === "audio" ? (
+          <div className="flex h-full w-full items-center justify-center px-2">
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <audio controls src={media.url} className="w-full">
+              Audio preview unavailable.
+            </audio>
+          </div>
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={media.url}
+            alt={media.label}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        )}
+      </div>
+      <span className="flex items-center justify-between gap-1 px-2 py-1.5 text-xs font-medium text-ink">
+        <span className="truncate">{media.label}</span>
+        {group === "threeD" ? (
+          <span className="rounded bg-accent-soft px-1 text-[10px] font-semibold text-accent">
+            3D
+          </span>
+        ) : null}
+      </span>
+    </button>
   );
 }

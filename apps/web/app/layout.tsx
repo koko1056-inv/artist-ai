@@ -39,6 +39,13 @@ export default function RootLayout({
                   {translate(item.key)}
                 </Link>
               ))}
+              {/* No i18n key for partners yet — plain English label. */}
+              <Link
+                href="/partners"
+                className="rounded-md px-1 py-0.5 transition-colors hover:text-brand"
+              >
+                Partners
+              </Link>
             </div>
             <Link
               href="/pricing"
