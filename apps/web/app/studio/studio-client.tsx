@@ -9,6 +9,7 @@ import type {
   PublishResponse,
 } from "@pd/contracts";
 import { Badge, Card } from "../../components/ui";
+import { AssetThumb } from "../../components/asset-thumb";
 
 interface TemplateOption {
   id: TemplateId;
@@ -160,11 +161,11 @@ export default function StudioClient({
                       : "border-line hover:border-brand/60"
                   }`}
                 >
-                  <img
-                    src={a.thumbnailUrl}
-                    alt={`${a.label} illustration`}
+                  <AssetThumb
+                    slug={a.id}
+                    fallbackSrc={a.thumbnailUrl}
+                    alt={`${a.label} image`}
                     className="h-20 w-full object-cover"
-                    loading="lazy"
                   />
                   <span className="block px-2 py-1.5 text-xs font-medium text-ink">
                     {a.label}

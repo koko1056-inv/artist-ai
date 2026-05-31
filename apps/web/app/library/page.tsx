@@ -1,4 +1,5 @@
 import { Badge, Card, SectionTitle } from "../../components/ui";
+import { AssetThumb } from "../../components/asset-thumb";
 import { loadAssets } from "../../lib/data";
 
 export const dynamic = "force-dynamic";
@@ -26,13 +27,13 @@ export default async function LibraryPage() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {assets.map((asset) => (
           <Card key={asset.id} className="flex flex-col">
-            {/* Illustration: an original, emblematic motif — never the protected
-                character art — so the catalog is visual yet legally safe. */}
-            <img
-              src={asset.thumbnailUrl}
-              alt={`${asset.label} illustration`}
+            {/* Real public-domain image when available (the work itself is PD),
+                falling back to the bundled illustration so a tile never breaks. */}
+            <AssetThumb
+              slug={asset.id}
+              fallbackSrc={asset.thumbnailUrl}
+              alt={`${asset.label} image`}
               className="mb-4 h-36 w-full rounded-[var(--radius-card)] border border-line object-cover"
-              loading="lazy"
             />
 
             <div className="flex items-start justify-between gap-2">
