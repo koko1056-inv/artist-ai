@@ -75,7 +75,7 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     id: "steamboat-willie-mickey",
     label: "Steamboat Willie Mickey (1928)",
     kind: "character",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/steamboat-mickey.png",
+    thumbnailUrl: "/assets/steamboat-willie-mickey.svg",
     provenanceNotice:
       "Based on the 1928 public-domain version of Mickey Mouse from Steamboat Willie.",
     publicDomainIn: ["US"],
@@ -84,7 +84,7 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     id: "betty-boop-early",
     label: "Betty Boop (early)",
     kind: "character",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/betty-boop.png",
+    thumbnailUrl: "/assets/betty-boop-early.svg",
     provenanceNotice: "Based on the early public-domain version of Betty Boop.",
     publicDomainIn: ["US"],
   },
@@ -92,7 +92,7 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     id: "nancy-drew-early",
     label: "Nancy Drew (early novels)",
     kind: "character",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/nancy-drew.png",
+    thumbnailUrl: "/assets/nancy-drew-early.svg",
     provenanceNotice: "Based on the early public-domain Nancy Drew novels.",
     publicDomainIn: ["US"],
   },
@@ -100,7 +100,7 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     id: "albert-einstein",
     label: "Albert Einstein (historical)",
     kind: "historical-figure",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/einstein.png",
+    thumbnailUrl: "/assets/albert-einstein.svg",
     provenanceNotice:
       "A creative depiction based on the historical figure Albert Einstein.",
     publicDomainIn: ["US", "EU"],
@@ -109,7 +109,7 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     id: "nikola-tesla",
     label: "Nikola Tesla (historical)",
     kind: "historical-figure",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/tesla.png",
+    thumbnailUrl: "/assets/nikola-tesla.svg",
     provenanceNotice:
       "A creative depiction based on the historical figure Nikola Tesla.",
     publicDomainIn: ["US", "EU"],
@@ -118,7 +118,7 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     id: "leonardo-da-vinci",
     label: "Leonardo da Vinci (historical)",
     kind: "historical-figure",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/da-vinci.png",
+    thumbnailUrl: "/assets/leonardo-da-vinci.svg",
     provenanceNotice:
       "A creative depiction based on the historical figure Leonardo da Vinci.",
     publicDomainIn: ["US", "EU"],
@@ -127,7 +127,7 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     id: "hokusai-great-wave",
     label: "Hokusai — The Great Wave",
     kind: "artwork",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/great-wave.png",
+    thumbnailUrl: "/assets/hokusai-great-wave.svg",
     provenanceNotice:
       "Based on Katsushika Hokusai's public-domain woodblock print.",
     publicDomainIn: ["US", "EU", "JP"],

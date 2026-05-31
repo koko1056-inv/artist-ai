@@ -140,20 +140,44 @@ export default function StudioClient({
           {templates.find((t) => t.id === templateId)?.description}
         </p>
 
-        <label className="mt-4 block text-sm font-medium text-ink">
-          Public-domain asset
-          <select
-            value={assetId}
-            onChange={(e) => setAssetId(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line bg-card px-3 py-2 text-sm"
-          >
-            {assets.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <fieldset className="mt-4">
+          <legend className="text-sm font-medium text-ink">
+            Public-domain asset
+          </legend>
+          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {assets.map((a) => {
+              const selected = a.id === assetId;
+              return (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => setAssetId(a.id)}
+                  aria-pressed={selected}
+                  title={a.provenanceNotice}
+                  className={`group overflow-hidden rounded-xl border text-left transition-all ${
+                    selected
+                      ? "border-brand ring-2 ring-brand"
+                      : "border-line hover:border-brand/60"
+                  }`}
+                >
+                  <img
+                    src={a.thumbnailUrl}
+                    alt={`${a.label} illustration`}
+                    className="h-20 w-full object-cover"
+                    loading="lazy"
+                  />
+                  <span className="block px-2 py-1.5 text-xs font-medium text-ink">
+                    {a.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-1 text-xs text-ink-soft">
+            Illustrations are original, public-domain-safe motifs. The selected
+            asset&apos;s provenance notice is attached to anything you publish.
+          </p>
+        </fieldset>
 
         <label className="mt-4 block text-sm font-medium text-ink">
           Prompt

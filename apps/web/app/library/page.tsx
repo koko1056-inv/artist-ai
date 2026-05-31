@@ -26,6 +26,15 @@ export default async function LibraryPage() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {assets.map((asset) => (
           <Card key={asset.id} className="flex flex-col">
+            {/* Illustration: an original, emblematic motif — never the protected
+                character art — so the catalog is visual yet legally safe. */}
+            <img
+              src={asset.thumbnailUrl}
+              alt={`${asset.label} illustration`}
+              className="mb-4 h-36 w-full rounded-[var(--radius-card)] border border-line object-cover"
+              loading="lazy"
+            />
+
             <div className="flex items-start justify-between gap-2">
               <h3 className="font-semibold text-ink">{asset.label}</h3>
               <Badge tone="accent">{KIND_LABEL[asset.kind] ?? asset.kind}</Badge>

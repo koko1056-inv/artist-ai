@@ -20,7 +20,7 @@ const ASSETS: SeedAsset[] = [
     slug: "steamboat-willie-mickey",
     label: "Steamboat Willie Mickey (1928)",
     kind: "character",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/steamboat-mickey.png",
+    thumbnailUrl: "/assets/steamboat-willie-mickey.svg",
     publicDomainIn: ["US"],
     styleGuide: {
       label: "Steamboat Willie Mickey (1928)",
@@ -39,7 +39,7 @@ const ASSETS: SeedAsset[] = [
     slug: "betty-boop-early",
     label: "Betty Boop (early)",
     kind: "character",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/betty-boop.png",
+    thumbnailUrl: "/assets/betty-boop-early.svg",
     publicDomainIn: ["US"],
     styleGuide: {
       label: "Betty Boop (early)",
@@ -52,7 +52,7 @@ const ASSETS: SeedAsset[] = [
     slug: "nancy-drew-early",
     label: "Nancy Drew (early novels)",
     kind: "character",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/nancy-drew.png",
+    thumbnailUrl: "/assets/nancy-drew-early.svg",
     publicDomainIn: ["US"],
     styleGuide: {
       label: "Nancy Drew (early novels)",
@@ -66,7 +66,7 @@ const ASSETS: SeedAsset[] = [
     slug: "albert-einstein",
     label: "Albert Einstein (historical)",
     kind: "historical_figure",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/einstein.png",
+    thumbnailUrl: "/assets/albert-einstein.svg",
     publicDomainIn: ["US", "EU"],
     styleGuide: {
       label: "Albert Einstein (historical)",
@@ -81,7 +81,7 @@ const ASSETS: SeedAsset[] = [
     slug: "nikola-tesla",
     label: "Nikola Tesla (historical)",
     kind: "historical_figure",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/tesla.png",
+    thumbnailUrl: "/assets/nikola-tesla.svg",
     publicDomainIn: ["US", "EU"],
     styleGuide: {
       label: "Nikola Tesla (historical)",
@@ -95,7 +95,7 @@ const ASSETS: SeedAsset[] = [
     slug: "leonardo-da-vinci",
     label: "Leonardo da Vinci (historical)",
     kind: "historical_figure",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/da-vinci.png",
+    thumbnailUrl: "/assets/leonardo-da-vinci.svg",
     publicDomainIn: ["US", "EU"],
     styleGuide: {
       label: "Leonardo da Vinci (historical)",
@@ -108,7 +108,7 @@ const ASSETS: SeedAsset[] = [
     slug: "hokusai-great-wave",
     label: "Hokusai — The Great Wave",
     kind: "artwork",
-    thumbnailUrl: "https://assets.pdforge.dev/seed/great-wave.png",
+    thumbnailUrl: "/assets/hokusai-great-wave.svg",
     publicDomainIn: ["US", "EU", "JP"],
     styleGuide: {
       label: "Hokusai — The Great Wave (public domain)",

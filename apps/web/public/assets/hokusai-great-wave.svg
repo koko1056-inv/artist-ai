@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Stylized cresting wave motif">
+  <defs>
+    <linearGradient id="hwg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9e6ef"/>
+      <stop offset="1" stop-color="#9cbcd6"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#hwg)"/>
+  <!-- sun/moon -->
+  <circle cx="305" cy="80" r="40" fill="#f3ede0"/>
+  <!-- big wave (original stylized curl) -->
+  <path d="M-10 230
+           C 70 120, 150 120, 200 175
+           C 150 130, 110 175, 150 200
+           C 120 180, 110 205, 130 220
+           C 60 200, 40 250, 0 270 Z"
+        fill="#1c3a63"/>
+  <!-- foam circles -->
+  <g fill="#f3ede0">
+    <circle cx="60" cy="150" r="8"/>
+    <circle cx="92" cy="138" r="6"/>
+    <circle cx="120" cy="150" r="5"/>
+    <circle cx="150" cy="168" r="7"/>
+  </g>
+  <!-- secondary swells -->
+  <path d="M0 285 q60 -30 120 0 t120 0 t160 0 v15 H0 Z" fill="#2a4f7d"/>
+  <path d="M0 295 q70 -22 140 0 t140 0 t140 0 v5 H0 Z" fill="#1c3a63"/>
+</svg>

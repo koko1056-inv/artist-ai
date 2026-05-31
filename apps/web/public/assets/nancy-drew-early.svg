@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Mystery magnifier and book motif">
+  <defs>
+    <linearGradient id="ndg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f5c54"/>
+      <stop offset="1" stop-color="#0f352f"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#ndg)"/>
+  <!-- book -->
+  <g transform="translate(96,150)">
+    <path d="M0 0 q60 -22 110 0 v90 q-50 -20 -110 0 z" fill="#e9dcc3"/>
+    <path d="M110 0 q60 -22 110 0 v90 q-50 -20 -110 0 z" fill="#d8c8a8"/>
+    <line x1="110" y1="0" x2="110" y2="90" stroke="#0f352f" stroke-width="3"/>
+    <g stroke="#0f352f" stroke-width="2" opacity="0.4">
+      <line x1="18" y1="22" x2="92" y2="14"/>
+      <line x1="18" y1="40" x2="92" y2="32"/>
+      <line x1="128" y1="14" x2="202" y2="22"/>
+      <line x1="128" y1="32" x2="202" y2="40"/>
+    </g>
+  </g>
+  <!-- magnifying glass -->
+  <g transform="translate(250,90)">
+    <circle r="52" fill="#bfe3dd" opacity="0.35" stroke="#f0e7d2" stroke-width="9"/>
+    <rect x="34" y="34" width="70" height="18" rx="9" transform="rotate(45 34 34)" fill="#f0e7d2"/>
+    <!-- question mark inside -->
+    <text x="0" y="14" font-family="Georgia, serif" font-size="56" fill="#f0e7d2" text-anchor="middle">?</text>
+  </g>
+</svg>

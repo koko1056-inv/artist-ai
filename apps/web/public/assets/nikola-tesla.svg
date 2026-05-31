@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Lightning and coil motif">
+  <defs>
+    <linearGradient id="ntg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b3a6b"/>
+      <stop offset="1" stop-color="#0d1f3d"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#ntg)"/>
+  <!-- coil tower -->
+  <g transform="translate(120,60)" stroke="#7fb0e8" stroke-width="5" fill="none">
+    <line x1="0" y1="170" x2="0" y2="40"/>
+    <ellipse cx="0" cy="44" rx="28" ry="9"/>
+    <ellipse cx="0" cy="58" rx="34" ry="10"/>
+    <ellipse cx="0" cy="74" rx="40" ry="11"/>
+    <ellipse cx="0" cy="92" rx="46" ry="12"/>
+  </g>
+  <!-- top sphere -->
+  <circle cx="120" cy="92" r="16" fill="#ffe07a"/>
+  <!-- lightning bolt -->
+  <path d="M250 50 L210 150 H250 L200 270 L300 130 H255 L290 50 Z"
+        fill="#ffe07a" stroke="#fff4c4" stroke-width="3" stroke-linejoin="round"/>
+  <!-- spark dots -->
+  <g fill="#bcd9ff">
+    <circle cx="150" cy="96" r="4"/>
+    <circle cx="178" cy="110" r="3"/>
+    <circle cx="120" cy="220" r="4"/>
+  </g>
+</svg>

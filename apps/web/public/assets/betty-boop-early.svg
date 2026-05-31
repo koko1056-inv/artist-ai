@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Vintage cartoon spotlight motif">
+  <defs>
+    <linearGradient id="bbg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a1f3d"/>
+      <stop offset="1" stop-color="#4a1026"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bbg)"/>
+  <!-- spotlight beam -->
+  <path d="M200 20 L70 280 H330 Z" fill="#f6d7a8" opacity="0.18"/>
+  <!-- star -->
+  <g transform="translate(200,118)" fill="#f6d7a8">
+    <path d="M0 -54 L15 -16 L56 -16 L23 8 L35 48 L0 24 L-35 48 L-23 8 L-56 -16 L-15 -16 Z"/>
+  </g>
+  <!-- film reel -->
+  <g transform="translate(110,210)" fill="none" stroke="#f6d7a8" stroke-width="6">
+    <circle r="40"/>
+    <circle r="10" fill="#f6d7a8" stroke="none"/>
+    <circle cx="0" cy="-26" r="6" fill="#f6d7a8" stroke="none"/>
+    <circle cx="24" cy="10" r="6" fill="#f6d7a8" stroke="none"/>
+    <circle cx="-24" cy="10" r="6" fill="#f6d7a8" stroke="none"/>
+  </g>
+  <!-- musical notes -->
+  <g fill="#f6d7a8">
+    <circle cx="280" cy="218" r="12"/>
+    <rect x="290" y="170" width="5" height="50"/>
+    <circle cx="318" cy="232" r="12"/>
+    <rect x="328" y="184" width="5" height="50"/>
+    <path d="M290 170 h43 v12 h-43 z"/>
+  </g>
+</svg>
