@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "PD Forge",
+    "slug": "pd-forge",
+    "scheme": "pdforge",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pdforge.host"
+    },
+    "android": {
+      "package": "com.pdforge.host"
+    },
+    "updates": {
+      "enabled": true,
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "extra": {
+      "apiBaseUrl": "http://localhost:3000"
+    }
+  }
+}
