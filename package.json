@@ -23,6 +23,6 @@
     "vitest": "^2.1.8"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": ["esbuild", "prisma", "@prisma/client"]
   }
 }
