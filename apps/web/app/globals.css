@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/*
+ * PD Forge design tokens — a warm, professional palette.
+ * Tailwind v4 reads `@theme` tokens and generates utilities (bg-*, text-*, etc.).
+ */
+@theme {
+  --color-ink: #1f1a17;
+  --color-ink-soft: #4b423c;
+  --color-paper: #fbf7f1;
+  --color-paper-2: #f3ece1;
+  --color-card: #ffffff;
+  --color-line: #e7ddcf;
+
+  --color-brand: #c1571e;
+  --color-brand-strong: #9c4316;
+  --color-brand-soft: #f6e3d4;
+  --color-accent: #2f6f6a;
+  --color-accent-soft: #dbeae7;
+
+  --color-success: #2e7d4f;
+  --color-warn: #b07b00;
+  --color-danger: #b3261e;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  --radius-card: 0.875rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mobile-first base sizing. */
+body {
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+a {
+  color: inherit;
+}

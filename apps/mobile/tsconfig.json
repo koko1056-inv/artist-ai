@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM"],
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "noEmit": true,
+    "types": ["react"],
+    "allowImportingTsExtensions": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    // The skeleton ships a local `react-native` type shim (src/types/react-native.d.ts)
+    // so `tsc --noEmit` passes without the full react-native types installed. We relax
+    // verbatimModuleSyntax (which would force `import type` for type-only imports) to
+    // keep the JSX/component code ergonomic in a React Native context.
+    "verbatimModuleSyntax": false,
+    "esModuleInterop": true,
+    "allowJs": false
+  },
+  "include": ["index.ts", "src", "app.json"]
+}

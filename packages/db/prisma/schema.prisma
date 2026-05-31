@@ -1,0 +1,147 @@
+// Data model for PD Forge.
+//
+// Design notes:
+// - Money is stored in minor units (Int) plus a currency code, matching @pd/core.
+// - AssetUsage is an append-only audit trail: it records exactly which PD asset a
+//   published app version used, for legal provenance / DMCA defense.
+// - Apps are versioned (AppVersion); a Listing points at the published version.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlanId {
+  free
+  basic
+  pro
+  enterprise
+}
+
+enum AssetKind {
+  character
+  historical_figure
+  artwork
+}
+
+enum TemplateId {
+  task_manager
+  habit_tracker
+  calendar
+  notes
+}
+
+enum ListingStatus {
+  draft
+  in_review
+  published
+  rejected
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  displayName  String
+  locale       String        @default("en")
+  createdAt    DateTime      @default(now())
+  subscription Subscription?
+  apps         App[]
+  purchases    Purchase[]
+}
+
+model Subscription {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id])
+  planId               PlanId   @default(free)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  currentPeriodEnd     DateTime?
+  // Usage window for cost guardrails, reset each billing period.
+  generationsUsed      Int      @default(0)
+  aiSpendMinor         Int      @default(0)
+  updatedAt            DateTime @updatedAt
+}
+
+model PdAsset {
+  id               String      @id @default(cuid())
+  slug             String      @unique
+  label            String
+  kind             AssetKind
+  thumbnailUrl     String
+  // Style guide / licensing rules, stored as JSON matching @pd/core StyleGuide.
+  styleGuide       Json
+  provenanceNotice String
+  // ISO market codes where the source work is confirmed public domain.
+  publicDomainIn   String[]
+  createdAt        DateTime    @default(now())
+  usages           AssetUsage[]
+}
+
+model App {
+  id          String       @id @default(cuid())
+  ownerId     String
+  owner       User         @relation(fields: [ownerId], references: [id])
+  templateId  TemplateId
+  title       String
+  createdAt   DateTime     @default(now())
+  versions    AppVersion[]
+  listing     Listing?
+}
+
+model AppVersion {
+  id            String      @id @default(cuid())
+  appId         String
+  app           App         @relation(fields: [appId], references: [id])
+  // Pointer to the sandboxed bundle the host app / PWA loads.
+  bundleUrl     String
+  modelTier     String
+  aiAssisted    Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  usages        AssetUsage[]
+}
+
+model AssetUsage {
+  id           String     @id @default(cuid())
+  appVersionId String
+  appVersion   AppVersion @relation(fields: [appVersionId], references: [id])
+  assetId      String
+  asset        PdAsset    @relation(fields: [assetId], references: [id])
+  // Notice rendered on the listing at publish time (frozen for the record).
+  noticeShown  String
+  recordedAt   DateTime   @default(now())
+}
+
+model Listing {
+  id               String        @id @default(cuid())
+  appId            String        @unique
+  app              App           @relation(fields: [appId], references: [id])
+  title            String
+  summary          String
+  priceMinor       Int           @default(0)
+  currency         String        @default("USD")
+  status           ListingStatus @default(in_review)
+  provenanceNotice String
+  installCount     Int           @default(0)
+  ratingSum        Int           @default(0)
+  ratingCount      Int           @default(0)
+  createdAt        DateTime      @default(now())
+  purchases        Purchase[]
+}
+
+model Purchase {
+  id          String   @id @default(cuid())
+  listingId   String
+  listing     Listing  @relation(fields: [listingId], references: [id])
+  buyerId     String
+  buyer       User     @relation(fields: [buyerId], references: [id])
+  grossMinor  Int
+  feeMinor    Int
+  payoutMinor Int
+  currency    String   @default("USD")
+  createdAt   DateTime @default(now())
+}
