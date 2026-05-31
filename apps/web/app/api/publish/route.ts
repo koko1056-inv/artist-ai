@@ -9,30 +9,43 @@ import { SAMPLE_STYLE_GUIDES } from "../../../lib/sample-data";
 
 export const dynamic = "force-dynamic";
 
-/** Resolve the style guide + license for the app version being published. */
+interface ResolvedTerms {
+  licenseType: "public-domain" | "licensed";
+  royaltyRate: number;
+  requiresApproval: boolean;
+  partnerName?: string;
+}
+
+/** Resolve the style guide + license (incl. rights terms) for the version being published. */
 async function resolveLicense(appVersionId: string): Promise<{
   styleGuide: StyleGuide;
   license: AssetLicense;
+  terms: ResolvedTerms;
 }> {
-  // Try the DB: find the asset recorded against this version's usage, with its
-  // style guide and PD markets, so the license check is exact.
   try {
     const { prisma } = await import("@pd/db");
     const usage = await prisma.assetUsage.findFirst({
       where: { appVersionId },
-      include: { asset: true },
+      include: { asset: { include: { ipPartner: true } } },
     });
     if (usage?.asset) {
-      const sg = usage.asset.styleGuide as unknown as StyleGuide;
+      const a = usage.asset;
+      const sg = a.styleGuide as unknown as StyleGuide;
       return {
         styleGuide: sg,
         license: {
           kind:
-            usage.asset.kind === "historical_figure"
+            a.kind === "historical_figure"
               ? "historical-figure"
-              : (usage.asset.kind as AssetLicense["kind"]),
-          publicDomainIn: usage.asset.publicDomainIn,
+              : (a.kind as AssetLicense["kind"]),
+          publicDomainIn: a.publicDomainIn,
           styleGuide: sg,
+        },
+        terms: {
+          licenseType: a.licenseType === "licensed" ? "licensed" : "public-domain",
+          royaltyRate: a.royaltyRate ?? 0,
+          requiresApproval: a.requiresApproval ?? false,
+          partnerName: a.ipPartner?.name ?? undefined,
         },
       };
     }
@@ -50,6 +63,7 @@ async function resolveLicense(appVersionId: string): Promise<{
   return {
     styleGuide: sg,
     license: { kind: "character", publicDomainIn: ["US"], styleGuide: sg },
+    terms: { licenseType: "public-domain", royaltyRate: 0, requiresApproval: false },
   };
 }
 
@@ -68,7 +82,7 @@ export async function POST(req: Request): Promise<Response> {
   }
   const { appVersionId, title, summary } = parsed.data;
 
-  const { styleGuide, license } = await resolveLicense(appVersionId);
+  const { styleGuide, license, terms } = await resolveLicense(appVersionId);
 
   // Scan the listing copy for prohibited elements; these findings feed checkLicense.
   const review = reviewGeneratedContent({
@@ -82,12 +96,20 @@ export async function POST(req: Request): Promise<Response> {
     localeMarket: "US",
   });
 
-  const status: PublishResponse["status"] = result.ok ? "published" : "in-review";
+  // Licensed IP that requires partner approval cannot auto-publish even when clean.
+  const clean = result.ok;
+  const status: PublishResponse["status"] =
+    clean && !terms.requiresApproval ? "published" : "in-review";
+
   const response: PublishResponse = {
-    listingId: result.ok ? `lst_${Math.random().toString(36).slice(2, 10)}` : null,
+    listingId:
+      status === "published" ? `lst_${Math.random().toString(36).slice(2, 10)}` : null,
     status,
     requiredNotice: result.requiredNotice,
     violations: result.violations,
+    licenseType: terms.licenseType,
+    royaltyRate: terms.royaltyRate,
+    creditLine: terms.partnerName ? `© ${terms.partnerName}` : undefined,
   };
-  return apiOk(response, result.ok ? 201 : 200);
+  return apiOk(response, status === "published" ? 201 : 200);
 }

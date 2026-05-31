@@ -46,3 +46,22 @@ export function splitSale(
     creatorPayout: money(gross.amountMinor - fee, gross.currency),
   };
 }
+
+/**
+ * Three-way split for sales of apps built on licensed IP: the platform takes its rate,
+ * the rights holder takes a royalty, and the creator keeps the remainder. For public
+ * domain assets `royaltyRate` is 0 and this reduces to {@link splitSale}.
+ */
+export function splitSaleWithRoyalty(
+  gross: Money,
+  platformRate: number,
+  royaltyRate: number,
+): { platformFee: Money; royalty: Money; creatorPayout: Money } {
+  const platformFee = Math.round(gross.amountMinor * platformRate);
+  const royalty = Math.round(gross.amountMinor * royaltyRate);
+  return {
+    platformFee: money(platformFee, gross.currency),
+    royalty: money(royalty, gross.currency),
+    creatorPayout: money(gross.amountMinor - platformFee - royalty, gross.currency),
+  };
+}

@@ -1,10 +1,41 @@
 /**
- * Seeds the initial public-domain asset library. Each asset carries a style guide that
- * the publish-time review enforces (trademark avoidance, late-design prohibitions,
- * required transformations for historical figures).
+ * Seeds the public-domain asset library plus a sample licensed-IP partner, so both the
+ * PD flow and the "official IP" flow are exercisable. Each asset carries:
+ *  - a style guide (enforced at publish time),
+ *  - selectable media (images, and a 3D model on some), and
+ *  - license terms (public domain, or licensed with royalty / eligibility / approval).
  */
 import type { StyleGuide } from "@pd/core";
 import { prisma } from "./index.js";
+
+// A neutral, widely-used sample 3D model for the 3D-preview experience. Real assets are
+// uploaded per IP; this keeps the viewer demoable. Loaded client-side in the app.
+const SAMPLE_GLB = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+
+type MediaSeed = {
+  kind:
+    | "character_image"
+    | "sprite"
+    | "pose"
+    | "three_d_model"
+    | "audio"
+    | "artwork"
+    | "icon";
+  format: "png" | "jpg" | "svg" | "glb" | "gltf" | "mp3" | "wav";
+  label: string;
+  url: string;
+  posterUrl?: string;
+};
+
+type LicenseSeed = {
+  type: "public_domain" | "licensed";
+  royaltyRate: number;
+  requiresApproval: boolean;
+  allowedPlans: string[];
+  territories: string[];
+  expiresAt?: string;
+  partnerSlug?: string;
+};
 
 interface SeedAsset {
   slug: string;
@@ -13,7 +44,36 @@ interface SeedAsset {
   thumbnailUrl: string;
   publicDomainIn: string[];
   styleGuide: StyleGuide;
+  media: MediaSeed[];
+  license: LicenseSeed;
 }
+
+const ALL_PLANS = ["free", "basic", "pro", "enterprise"];
+
+/** Public-domain license terms (open to everyone, no royalty/approval). */
+const pd = (territories: string[]): LicenseSeed => ({
+  type: "public_domain",
+  royaltyRate: 0,
+  requiresApproval: false,
+  allowedPlans: ALL_PLANS,
+  territories,
+});
+
+/** A character image whose source is the asset's bundled illustration. */
+const img = (slug: string, label: string): MediaSeed => ({
+  kind: "character_image",
+  format: "svg",
+  label,
+  url: `/assets/${slug}.svg`,
+});
+
+const IP_PARTNERS = [
+  {
+    slug: "nova-pixel-studio",
+    name: "Nova Pixel Studio",
+    logoUrl: "/assets/partner-nova-pixel.svg",
+  },
+];
 
 const ASSETS: SeedAsset[] = [
   {
@@ -34,6 +94,17 @@ const ASSETS: SeedAsset[] = [
       ],
       requiredTransformations: [],
     },
+    media: [
+      img("steamboat-willie-mickey", "Steamboat Willie (still)"),
+      {
+        kind: "three_d_model",
+        format: "glb",
+        label: "Steamboat — 3D scene (sample)",
+        url: SAMPLE_GLB,
+        posterUrl: "/assets/steamboat-willie-mickey.svg",
+      },
+    ],
+    license: pd(["US"]),
   },
   {
     slug: "betty-boop-early",
@@ -47,6 +118,8 @@ const ASSETS: SeedAsset[] = [
       prohibitions: ["registered Betty Boop trademarks", "modern licensed merchandise styling"],
       requiredTransformations: [],
     },
+    media: [img("betty-boop-early", "Betty Boop (illustration)")],
+    license: pd(["US"]),
   },
   {
     slug: "nancy-drew-early",
@@ -56,11 +129,12 @@ const ASSETS: SeedAsset[] = [
     publicDomainIn: ["US"],
     styleGuide: {
       label: "Nancy Drew (early novels)",
-      provenanceNotice:
-        "Based on the early public-domain Nancy Drew novels.",
+      provenanceNotice: "Based on the early public-domain Nancy Drew novels.",
       prohibitions: ["later illustrated cover art", "TV/film likenesses"],
       requiredTransformations: [],
     },
+    media: [img("nancy-drew-early", "Nancy Drew (illustration)")],
+    license: pd(["US"]),
   },
   {
     slug: "albert-einstein",
@@ -76,6 +150,8 @@ const ASSETS: SeedAsset[] = [
       publicityNote:
         "Use as a transformed, creative depiction only; avoid implying endorsement.",
     },
+    media: [img("albert-einstein", "Einstein (illustration)")],
+    license: pd(["US", "EU"]),
   },
   {
     slug: "nikola-tesla",
@@ -90,6 +166,8 @@ const ASSETS: SeedAsset[] = [
       requiredTransformations: ["stylized / cartoon depiction"],
       publicityNote: "Use as a transformed, creative depiction only.",
     },
+    media: [img("nikola-tesla", "Tesla (illustration)")],
+    license: pd(["US", "EU"]),
   },
   {
     slug: "leonardo-da-vinci",
@@ -103,6 +181,8 @@ const ASSETS: SeedAsset[] = [
       prohibitions: ["endorsement implication"],
       requiredTransformations: ["stylized / cartoon depiction"],
     },
+    media: [img("leonardo-da-vinci", "da Vinci (illustration)")],
+    license: pd(["US", "EU"]),
   },
   {
     slug: "hokusai-great-wave",
@@ -116,6 +196,15 @@ const ASSETS: SeedAsset[] = [
       prohibitions: [],
       requiredTransformations: [],
     },
+    media: [
+      {
+        kind: "artwork",
+        format: "svg",
+        label: "The Great Wave (artwork)",
+        url: "/assets/hokusai-great-wave.svg",
+      },
+    ],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     slug: "sherlock-holmes",
@@ -133,6 +222,8 @@ const ASSETS: SeedAsset[] = [
       ],
       requiredTransformations: [],
     },
+    media: [img("sherlock-holmes", "Sherlock Holmes (illustration)")],
+    license: pd(["US", "EU"]),
   },
   {
     slug: "alice-in-wonderland",
@@ -147,6 +238,8 @@ const ASSETS: SeedAsset[] = [
       prohibitions: ["Disney 1951 film styling"],
       requiredTransformations: [],
     },
+    media: [img("alice-in-wonderland", "Alice (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     slug: "dracula",
@@ -160,6 +253,8 @@ const ASSETS: SeedAsset[] = [
       prohibitions: ["Bela Lugosi / Universal film likeness", "modern film adaptations"],
       requiredTransformations: [],
     },
+    media: [img("dracula", "Dracula (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     slug: "frankenstein",
@@ -177,6 +272,8 @@ const ASSETS: SeedAsset[] = [
       ],
       requiredTransformations: [],
     },
+    media: [img("frankenstein", "Frankenstein's Creature (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     slug: "wizard-of-oz",
@@ -191,6 +288,8 @@ const ASSETS: SeedAsset[] = [
       prohibitions: ["1939 MGM film elements (ruby slippers, specific film likenesses)"],
       requiredTransformations: [],
     },
+    media: [img("wizard-of-oz", "Wizard of Oz (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     slug: "robin-hood",
@@ -205,6 +304,8 @@ const ASSETS: SeedAsset[] = [
       prohibitions: ["Disney 1973 film styling"],
       requiredTransformations: [],
     },
+    media: [img("robin-hood", "Robin Hood (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     slug: "pinocchio",
@@ -219,6 +320,8 @@ const ASSETS: SeedAsset[] = [
       prohibitions: ["Disney 1940 film styling"],
       requiredTransformations: [],
     },
+    media: [img("pinocchio", "Pinocchio (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     slug: "van-gogh-starry-night",
@@ -233,12 +336,87 @@ const ASSETS: SeedAsset[] = [
       prohibitions: [],
       requiredTransformations: [],
     },
+    media: [
+      {
+        kind: "artwork",
+        format: "svg",
+        label: "The Starry Night (artwork)",
+        url: "/assets/van-gogh-starry-night.svg",
+      },
+    ],
+    license: pd(["US", "EU", "JP"]),
+  },
+
+  // --- Sample LICENSED IP (non-public-domain) to demonstrate the partner flow ---
+  {
+    slug: "nova-the-explorer",
+    label: "Nova the Explorer (licensed)",
+    kind: "character",
+    thumbnailUrl: "/assets/nova-the-explorer.svg",
+    publicDomainIn: [],
+    styleGuide: {
+      label: "Nova the Explorer — © Nova Pixel Studio",
+      provenanceNotice:
+        "Official licensed character. © Nova Pixel Studio. Used under platform license.",
+      prohibitions: ["off-model redesigns", "mature or political themes"],
+      requiredTransformations: [],
+    },
+    media: [
+      {
+        kind: "character_image",
+        format: "svg",
+        label: "Nova — hero pose",
+        url: "/assets/nova-the-explorer.svg",
+      },
+      {
+        kind: "three_d_model",
+        format: "glb",
+        label: "Nova — 3D model",
+        url: SAMPLE_GLB,
+        posterUrl: "/assets/nova-the-explorer.svg",
+      },
+    ],
+    license: {
+      type: "licensed",
+      royaltyRate: 0.3,
+      requiresApproval: true,
+      allowedPlans: ["pro", "enterprise"],
+      territories: ["US", "JP", "EU"],
+      expiresAt: "2030-01-01",
+      partnerSlug: "nova-pixel-studio",
+    },
   },
 ];
 
+const KIND_TO_PLATFORM_MEDIA: Record<MediaSeed["kind"], MediaSeed["kind"]> = {
+  character_image: "character_image",
+  sprite: "sprite",
+  pose: "pose",
+  three_d_model: "three_d_model",
+  audio: "audio",
+  artwork: "artwork",
+  icon: "icon",
+};
+
 async function main() {
+  // 1. IP partners.
+  const partnerIdBySlug = new Map<string, string>();
+  for (const p of IP_PARTNERS) {
+    const row = await prisma.ipPartner.upsert({
+      where: { slug: p.slug },
+      update: { name: p.name, logoUrl: p.logoUrl },
+      create: { slug: p.slug, name: p.name, logoUrl: p.logoUrl },
+    });
+    partnerIdBySlug.set(p.slug, row.id);
+  }
+
+  // 2. Assets (+ their media).
   for (const a of ASSETS) {
-    await prisma.pdAsset.upsert({
+    const ipPartnerId = a.license.partnerSlug
+      ? partnerIdBySlug.get(a.license.partnerSlug)
+      : undefined;
+
+    const asset = await prisma.pdAsset.upsert({
       where: { slug: a.slug },
       update: {
         label: a.label,
@@ -246,6 +424,13 @@ async function main() {
         provenanceNotice: a.styleGuide.provenanceNotice,
         publicDomainIn: a.publicDomainIn,
         styleGuide: a.styleGuide as unknown as object,
+        licenseType: a.license.type,
+        royaltyRate: a.license.royaltyRate,
+        requiresApproval: a.license.requiresApproval,
+        allowedPlans: a.license.allowedPlans,
+        territories: a.license.territories,
+        expiresAt: a.license.expiresAt ? new Date(a.license.expiresAt) : null,
+        ipPartnerId: ipPartnerId ?? null,
       },
       create: {
         slug: a.slug,
@@ -255,11 +440,34 @@ async function main() {
         provenanceNotice: a.styleGuide.provenanceNotice,
         publicDomainIn: a.publicDomainIn,
         styleGuide: a.styleGuide as unknown as object,
+        licenseType: a.license.type,
+        royaltyRate: a.license.royaltyRate,
+        requiresApproval: a.license.requiresApproval,
+        allowedPlans: a.license.allowedPlans,
+        territories: a.license.territories,
+        expiresAt: a.license.expiresAt ? new Date(a.license.expiresAt) : null,
+        ipPartnerId: ipPartnerId ?? null,
       },
     });
+
+    // Refresh media for this asset.
+    await prisma.assetMedia.deleteMany({ where: { assetId: asset.id } });
+    await prisma.assetMedia.createMany({
+      data: a.media.map((m) => ({
+        assetId: asset.id,
+        kind: KIND_TO_PLATFORM_MEDIA[m.kind],
+        format: m.format,
+        label: m.label,
+        url: m.url,
+        posterUrl: m.posterUrl ?? null,
+      })),
+    });
   }
+
   // eslint-disable-next-line no-console
-  console.log(`Seeded ${ASSETS.length} public-domain assets.`);
+  console.log(
+    `Seeded ${IP_PARTNERS.length} IP partner(s) and ${ASSETS.length} assets (incl. 1 licensed).`,
+  );
 }
 
 main()

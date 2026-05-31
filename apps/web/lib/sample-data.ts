@@ -1,11 +1,53 @@
 /**
  * In-memory fallback data so the web UI is fully demoable without a live Postgres.
- * The PD assets mirror `packages/db/src/seed.ts`; listings are illustrative samples.
- *
- * API routes try Prisma first and fall back to these when the DB is unavailable.
+ * Mirrors `packages/db/src/seed.ts`: public-domain assets plus one sample *licensed* IP
+ * asset (Nova the Explorer / Nova Pixel Studio) to exercise the partner flow. Each asset
+ * carries selectable media (images, and a 3D model on some) and license terms.
  */
-import type { Listing, PdAsset } from "@pd/contracts";
+import type { AssetMedia, LicenseInfo, Listing, PdAsset } from "@pd/contracts";
 import type { StyleGuide } from "@pd/core";
+
+/** Sample 3D model for the 3D-preview experience (loaded client-side in the app). */
+export const SAMPLE_GLB = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+
+const ALL_PLANS = ["free", "basic", "pro", "enterprise"] as const;
+
+/** Public-domain license terms (open to everyone, no royalty/approval). */
+const pd = (territories: string[]): LicenseInfo => ({
+  type: "public-domain",
+  royaltyRate: 0,
+  requiresApproval: false,
+  allowedPlans: [...ALL_PLANS],
+  territories,
+});
+
+const imageMedia = (slug: string, label: string): AssetMedia => ({
+  id: `${slug}-img`,
+  assetId: slug,
+  kind: "character-image",
+  format: "svg",
+  label,
+  url: `/assets/${slug}.svg`,
+});
+
+const artworkMedia = (slug: string, label: string): AssetMedia => ({
+  id: `${slug}-art`,
+  assetId: slug,
+  kind: "artwork",
+  format: "svg",
+  label,
+  url: `/assets/${slug}.svg`,
+});
+
+const model3d = (slug: string, label: string): AssetMedia => ({
+  id: `${slug}-3d`,
+  assetId: slug,
+  kind: "3d-model",
+  format: "glb",
+  label,
+  url: SAMPLE_GLB,
+  posterUrl: `/assets/${slug}.svg`,
+});
 
 /** Style guides keyed by asset id, mirroring the seed (server-side only). */
 export const SAMPLE_STYLE_GUIDES: Record<string, StyleGuide> = {
@@ -24,10 +66,7 @@ export const SAMPLE_STYLE_GUIDES: Record<string, StyleGuide> = {
   "betty-boop-early": {
     label: "Betty Boop (early)",
     provenanceNotice: "Based on the early public-domain version of Betty Boop.",
-    prohibitions: [
-      "registered Betty Boop trademarks",
-      "modern licensed merchandise styling",
-    ],
+    prohibitions: ["registered Betty Boop trademarks", "modern licensed merchandise styling"],
     requiredTransformations: [],
   },
   "nancy-drew-early": {
@@ -87,10 +126,7 @@ export const SAMPLE_STYLE_GUIDES: Record<string, StyleGuide> = {
   dracula: {
     label: "Dracula (Bram Stoker, 1897)",
     provenanceNotice: "Based on Bram Stoker's public-domain novel Dracula (1897).",
-    prohibitions: [
-      "Bela Lugosi / Universal film likeness",
-      "modern film adaptations",
-    ],
+    prohibitions: ["Bela Lugosi / Universal film likeness", "modern film adaptations"],
     requiredTransformations: [],
   },
   frankenstein: {
@@ -131,9 +167,15 @@ export const SAMPLE_STYLE_GUIDES: Record<string, StyleGuide> = {
     prohibitions: [],
     requiredTransformations: [],
   },
+  "nova-the-explorer": {
+    label: "Nova the Explorer — © Nova Pixel Studio",
+    provenanceNotice:
+      "Official licensed character. © Nova Pixel Studio. Used under platform license.",
+    prohibitions: ["off-model redesigns", "mature or political themes"],
+    requiredTransformations: [],
+  },
 };
 
-/** The PD asset kind in the DB seed uses snake_case; the client contract uses kebab. */
 export const SAMPLE_ASSETS: PdAsset[] = [
   {
     id: "steamboat-willie-mickey",
@@ -143,6 +185,11 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on the 1928 public-domain version of Mickey Mouse from Steamboat Willie.",
     publicDomainIn: ["US"],
+    media: [
+      imageMedia("steamboat-willie-mickey", "Steamboat Willie (still)"),
+      model3d("steamboat-willie-mickey", "Steamboat — 3D scene (sample)"),
+    ],
+    license: pd(["US"]),
   },
   {
     id: "betty-boop-early",
@@ -151,6 +198,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     thumbnailUrl: "/assets/betty-boop-early.svg",
     provenanceNotice: "Based on the early public-domain version of Betty Boop.",
     publicDomainIn: ["US"],
+    media: [imageMedia("betty-boop-early", "Betty Boop (illustration)")],
+    license: pd(["US"]),
   },
   {
     id: "nancy-drew-early",
@@ -159,6 +208,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     thumbnailUrl: "/assets/nancy-drew-early.svg",
     provenanceNotice: "Based on the early public-domain Nancy Drew novels.",
     publicDomainIn: ["US"],
+    media: [imageMedia("nancy-drew-early", "Nancy Drew (illustration)")],
+    license: pd(["US"]),
   },
   {
     id: "albert-einstein",
@@ -168,6 +219,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "A creative depiction based on the historical figure Albert Einstein.",
     publicDomainIn: ["US", "EU"],
+    media: [imageMedia("albert-einstein", "Einstein (illustration)")],
+    license: pd(["US", "EU"]),
   },
   {
     id: "nikola-tesla",
@@ -177,6 +230,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "A creative depiction based on the historical figure Nikola Tesla.",
     publicDomainIn: ["US", "EU"],
+    media: [imageMedia("nikola-tesla", "Tesla (illustration)")],
+    license: pd(["US", "EU"]),
   },
   {
     id: "leonardo-da-vinci",
@@ -186,6 +241,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "A creative depiction based on the historical figure Leonardo da Vinci.",
     publicDomainIn: ["US", "EU"],
+    media: [imageMedia("leonardo-da-vinci", "da Vinci (illustration)")],
+    license: pd(["US", "EU"]),
   },
   {
     id: "hokusai-great-wave",
@@ -195,6 +252,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on Katsushika Hokusai's public-domain woodblock print.",
     publicDomainIn: ["US", "EU", "JP"],
+    media: [artworkMedia("hokusai-great-wave", "The Great Wave (artwork)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     id: "sherlock-holmes",
@@ -204,6 +263,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on the public-domain early Sherlock Holmes stories by Arthur Conan Doyle.",
     publicDomainIn: ["US", "EU"],
+    media: [imageMedia("sherlock-holmes", "Sherlock Holmes (illustration)")],
+    license: pd(["US", "EU"]),
   },
   {
     id: "alice-in-wonderland",
@@ -213,6 +274,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on Lewis Carroll's public-domain Alice's Adventures in Wonderland and John Tenniel's illustrations.",
     publicDomainIn: ["US", "EU", "JP"],
+    media: [imageMedia("alice-in-wonderland", "Alice (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     id: "dracula",
@@ -221,6 +284,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     thumbnailUrl: "/assets/dracula.svg",
     provenanceNotice: "Based on Bram Stoker's public-domain novel Dracula (1897).",
     publicDomainIn: ["US", "EU", "JP"],
+    media: [imageMedia("dracula", "Dracula (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     id: "frankenstein",
@@ -230,6 +295,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on Mary Shelley's public-domain novel Frankenstein (1818).",
     publicDomainIn: ["US", "EU", "JP"],
+    media: [imageMedia("frankenstein", "Frankenstein's Creature (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     id: "wizard-of-oz",
@@ -239,6 +306,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on L. Frank Baum's public-domain novel and W. W. Denslow's illustrations (1900).",
     publicDomainIn: ["US", "EU", "JP"],
+    media: [imageMedia("wizard-of-oz", "Wizard of Oz (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     id: "robin-hood",
@@ -248,6 +317,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on the public-domain Robin Hood folklore and early literary versions.",
     publicDomainIn: ["US", "EU", "JP"],
+    media: [imageMedia("robin-hood", "Robin Hood (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     id: "pinocchio",
@@ -257,6 +328,8 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on Carlo Collodi's public-domain novel The Adventures of Pinocchio (1883).",
     publicDomainIn: ["US", "EU", "JP"],
+    media: [imageMedia("pinocchio", "Pinocchio (illustration)")],
+    license: pd(["US", "EU", "JP"]),
   },
   {
     id: "van-gogh-starry-night",
@@ -266,6 +339,32 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     provenanceNotice:
       "Based on Vincent van Gogh's public-domain painting The Starry Night (1889).",
     publicDomainIn: ["US", "EU", "JP"],
+    media: [artworkMedia("van-gogh-starry-night", "The Starry Night (artwork)")],
+    license: pd(["US", "EU", "JP"]),
+  },
+  // --- Sample LICENSED IP (non-public-domain) ---
+  {
+    id: "nova-the-explorer",
+    label: "Nova the Explorer (licensed)",
+    kind: "character",
+    thumbnailUrl: "/assets/nova-the-explorer.svg",
+    provenanceNotice:
+      "Official licensed character. © Nova Pixel Studio. Used under platform license.",
+    publicDomainIn: [],
+    media: [
+      imageMedia("nova-the-explorer", "Nova — hero pose"),
+      model3d("nova-the-explorer", "Nova — 3D model"),
+    ],
+    license: {
+      type: "licensed",
+      partnerName: "Nova Pixel Studio",
+      partnerLogoUrl: "/assets/partner-nova-pixel.svg",
+      royaltyRate: 0.3,
+      requiresApproval: true,
+      allowedPlans: ["pro", "enterprise"],
+      territories: ["US", "JP", "EU"],
+      expiresAt: "2030-01-01",
+    },
   },
 ];
 
@@ -285,6 +384,8 @@ export const SAMPLE_LISTINGS: Listing[] = [
       "Based on the 1928 public-domain version of Mickey Mouse from Steamboat Willie.",
     installCount: 12840,
     rating: 4.6,
+    thumbnailUrl: "/assets/steamboat-willie-mickey.svg",
+    licenseType: "public-domain",
   },
   {
     id: "lst_betty_habits",
@@ -300,6 +401,8 @@ export const SAMPLE_LISTINGS: Listing[] = [
     provenanceNotice: "Based on the early public-domain version of Betty Boop.",
     installCount: 30210,
     rating: 4.8,
+    thumbnailUrl: "/assets/betty-boop-early.svg",
+    licenseType: "public-domain",
   },
   {
     id: "lst_einstein_notes",
@@ -316,6 +419,8 @@ export const SAMPLE_LISTINGS: Listing[] = [
       "A creative depiction based on the historical figure Albert Einstein.",
     installCount: 5470,
     rating: 4.3,
+    thumbnailUrl: "/assets/albert-einstein.svg",
+    licenseType: "public-domain",
   },
   {
     id: "lst_wave_calendar",
@@ -332,6 +437,27 @@ export const SAMPLE_LISTINGS: Listing[] = [
       "Based on Katsushika Hokusai's public-domain woodblock print.",
     installCount: 8920,
     rating: 4.5,
+    thumbnailUrl: "/assets/hokusai-great-wave.svg",
+    licenseType: "public-domain",
+  },
+  {
+    id: "lst_nova_habits",
+    appId: "app_nova_habits",
+    title: "Nova Quest",
+    summary:
+      "An official Nova the Explorer habit tracker — complete quests to help Nova explore new planets.",
+    templateId: "habit-tracker",
+    creatorName: "Studio Collab",
+    priceMinor: 399,
+    currency: "USD",
+    aiAssisted: true,
+    provenanceNotice:
+      "Official licensed character. © Nova Pixel Studio. Used under platform license.",
+    installCount: 2110,
+    rating: 4.9,
+    thumbnailUrl: "/assets/nova-the-explorer.svg",
+    licenseType: "licensed",
+    creditLine: "© Nova Pixel Studio",
   },
 ];
 
@@ -341,10 +467,13 @@ export const SAMPLE_PURCHASES: ReadonlyArray<{
   grossMinor: number;
   currency: "USD";
   count: number;
+  /** Royalty rate paid to an IP partner (0 for public domain). */
+  royaltyRate: number;
 }> = [
-  { listingTitle: "Steamboat To-Do", grossMinor: 299, currency: "USD", count: 412 },
-  { listingTitle: "Relativity Notes", grossMinor: 199, currency: "USD", count: 233 },
-  { listingTitle: "Great Wave Calendar", grossMinor: 499, currency: "USD", count: 76 },
+  { listingTitle: "Steamboat To-Do", grossMinor: 299, currency: "USD", count: 412, royaltyRate: 0 },
+  { listingTitle: "Relativity Notes", grossMinor: 199, currency: "USD", count: 233, royaltyRate: 0 },
+  { listingTitle: "Great Wave Calendar", grossMinor: 499, currency: "USD", count: 76, royaltyRate: 0 },
+  { listingTitle: "Nova Quest", grossMinor: 399, currency: "USD", count: 188, royaltyRate: 0.3 },
 ];
 
 export function findSampleAsset(id: string): PdAsset | undefined {

@@ -29,6 +29,71 @@ export interface AssetLicense {
 }
 
 /**
+ * How an asset may be used. Public-domain assets are open to everyone with no royalty.
+ * Licensed assets come from an IP partner and carry royalty, eligibility, approval, and
+ * territory/expiry terms — the mechanism that lets us onboard official IP when we partner
+ * with a rights holder, without changing the rest of the create→publish flow.
+ */
+export type LicenseType = "public-domain" | "licensed";
+
+export interface IpPartner {
+  id: string;
+  name: string;
+  logoUrl?: string;
+}
+
+export interface LicenseTerms {
+  type: LicenseType;
+  /** Present only for licensed assets. */
+  partner?: IpPartner;
+  /** Fraction of gross paid to the rights holder. 0 for public domain. */
+  royaltyRate: number;
+  /** Licensed assets usually require manual approval before publishing. */
+  requiresApproval: boolean;
+  /** Plan ids allowed to use this asset. Public domain = all plans. */
+  allowedPlans: string[];
+  /** ISO market codes where use is permitted. */
+  territories: string[];
+  /** ISO date string after which the license is no longer valid. */
+  expiresAt?: string;
+}
+
+export interface EligibilityResult {
+  eligible: boolean;
+  reason?: "plan-not-allowed" | "expired" | "territory-not-allowed";
+}
+
+/** Whether a creator on `planId` may use an asset with the given terms, in `market`. */
+export function checkEligibility(
+  terms: LicenseTerms,
+  opts: { planId: string; market: string; now?: Date },
+): EligibilityResult {
+  if (terms.type === "licensed") {
+    if (!terms.allowedPlans.includes(opts.planId)) {
+      return { eligible: false, reason: "plan-not-allowed" };
+    }
+    if (terms.expiresAt && new Date(terms.expiresAt) < (opts.now ?? new Date())) {
+      return { eligible: false, reason: "expired" };
+    }
+  }
+  if (terms.territories.length > 0 && !terms.territories.includes(opts.market)) {
+    return { eligible: false, reason: "territory-not-allowed" };
+  }
+  return { eligible: true };
+}
+
+/** Convenience: public-domain terms (open to everyone, no royalty/approval). */
+export function publicDomainTerms(publicDomainIn: string[]): LicenseTerms {
+  return {
+    type: "public-domain",
+    royaltyRate: 0,
+    requiresApproval: false,
+    allowedPlans: ["free", "basic", "pro", "enterprise"],
+    territories: publicDomainIn,
+  };
+}
+
+/**
  * Result of validating a candidate publication against an asset's license rules.
  * The automated review (see `@pd/ai`) feeds findings here; a human queue handles
  * anything flagged.

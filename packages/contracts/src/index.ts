@@ -14,11 +14,52 @@ export const templateIdSchema = z.enum([
 ]);
 export const modelTierSchema = z.enum(["small", "standard", "premium"]);
 
+export const mediaKindSchema = z.enum([
+  "character-image",
+  "sprite",
+  "pose",
+  "3d-model",
+  "audio",
+  "artwork",
+  "icon",
+]);
+export const mediaFormatSchema = z.enum(["png", "jpg", "svg", "glb", "gltf", "mp3", "wav"]);
+export const licenseTypeSchema = z.enum(["public-domain", "licensed"]);
+
+/** A selectable piece of media on an asset (image, 3D model, audio…). */
+export const assetMediaSchema = z.object({
+  id: z.string(),
+  assetId: z.string(),
+  kind: mediaKindSchema,
+  format: mediaFormatSchema,
+  label: z.string(),
+  url: z.string(),
+  posterUrl: z.string().optional(),
+  width: z.number().int().positive().optional(),
+  height: z.number().int().positive().optional(),
+});
+export type AssetMedia = z.infer<typeof assetMediaSchema>;
+
+/** Rights/licensing info surfaced to clients (PD vs licensed IP). */
+export const licenseInfoSchema = z.object({
+  type: licenseTypeSchema,
+  partnerName: z.string().optional(),
+  partnerLogoUrl: z.string().optional(),
+  royaltyRate: z.number().min(0).max(1),
+  requiresApproval: z.boolean(),
+  allowedPlans: z.array(planIdSchema),
+  territories: z.array(z.string()),
+  expiresAt: z.string().optional(),
+});
+export type LicenseInfo = z.infer<typeof licenseInfoSchema>;
+
 /** POST /api/generate — request an AI-generated app bundle. */
 export const generateRequestSchema = z.object({
   prompt: z.string().min(10).max(2000),
   templateId: templateIdSchema,
   assetId: z.string().min(1),
+  /** Specific media (images / 3D / audio) the creator picked to include. */
+  mediaIds: z.array(z.string()).default([]),
   /** Optional: refine an existing app version with a diff-based edit (cheaper). */
   baseVersionId: z.string().optional(),
 });
@@ -35,14 +76,20 @@ export const generateResponseSchema = z.object({
 });
 export type GenerateResponse = z.infer<typeof generateResponseSchema>;
 
-/** Public-domain asset as exposed to clients (style guide is server-enforced). */
+/**
+ * An asset as exposed to clients. Carries its selectable media and its license info.
+ * Public-domain and licensed-IP assets share this shape; `license.type` distinguishes
+ * them. (Name kept as `pdAsset*` for backward compatibility.)
+ */
 export const pdAssetSchema = z.object({
   id: z.string(),
   label: z.string(),
   kind: z.enum(["character", "historical-figure", "artwork"]),
-  thumbnailUrl: z.string().url(),
+  thumbnailUrl: z.string(),
   provenanceNotice: z.string(),
   publicDomainIn: z.array(z.string()),
+  media: z.array(assetMediaSchema).default([]),
+  license: licenseInfoSchema,
 });
 export type PdAsset = z.infer<typeof pdAssetSchema>;
 
@@ -60,6 +107,12 @@ export const listingSchema = z.object({
   provenanceNotice: z.string(),
   installCount: z.number().int().nonnegative(),
   rating: z.number().min(0).max(5),
+  /** Thumbnail for the listing card (asset image / illustration). */
+  thumbnailUrl: z.string().optional(),
+  /** Rights context shown on the listing. */
+  licenseType: licenseTypeSchema.default("public-domain"),
+  /** Credit line for licensed IP (e.g. "© Demo Studio"). */
+  creditLine: z.string().optional(),
 });
 export type Listing = z.infer<typeof listingSchema>;
 
@@ -78,6 +131,12 @@ export const publishResponseSchema = z.object({
   status: z.enum(["published", "in-review", "rejected"]),
   requiredNotice: z.string(),
   violations: z.array(z.string()),
+  /** Rights context for the published app. */
+  licenseType: licenseTypeSchema.default("public-domain"),
+  /** Royalty rate applied to sales (0 for public domain). */
+  royaltyRate: z.number().min(0).max(1).default(0),
+  /** Credit line to display when built on licensed IP. */
+  creditLine: z.string().optional(),
 });
 export type PublishResponse = z.infer<typeof publishResponseSchema>;
 

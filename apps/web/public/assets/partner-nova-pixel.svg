@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Nova Pixel Studio logo">
+  <rect width="120" height="120" rx="24" fill="#2a1b6e"/>
+  <!-- pixel star -->
+  <g fill="#7fe3d0">
+    <rect x="52" y="20" width="16" height="16"/>
+    <rect x="52" y="36" width="16" height="16"/>
+    <rect x="36" y="52" width="16" height="16"/>
+    <rect x="52" y="52" width="16" height="16"/>
+    <rect x="68" y="52" width="16" height="16"/>
+    <rect x="52" y="68" width="16" height="16"/>
+    <rect x="36" y="84" width="16" height="16"/>
+    <rect x="68" y="84" width="16" height="16"/>
+  </g>
+  <rect x="52" y="52" width="16" height="16" fill="#ffe6a0"/>
+</svg>

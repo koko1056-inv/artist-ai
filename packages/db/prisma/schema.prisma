@@ -28,6 +28,31 @@ enum AssetKind {
   artwork
 }
 
+enum LicenseType {
+  public_domain
+  licensed
+}
+
+enum MediaKind {
+  character_image
+  sprite
+  pose
+  three_d_model
+  audio
+  artwork
+  icon
+}
+
+enum MediaFormat {
+  png
+  jpg
+  svg
+  glb
+  gltf
+  mp3
+  wav
+}
+
 enum TemplateId {
   task_manager
   habit_tracker
@@ -67,6 +92,15 @@ model Subscription {
   updatedAt            DateTime @updatedAt
 }
 
+model IpPartner {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  logoUrl   String?
+  createdAt DateTime  @default(now())
+  assets    PdAsset[]
+}
+
 model PdAsset {
   id               String      @id @default(cuid())
   slug             String      @unique
@@ -78,8 +112,34 @@ model PdAsset {
   provenanceNotice String
   // ISO market codes where the source work is confirmed public domain.
   publicDomainIn   String[]
+
+  // Licensing: public domain by default; licensed assets reference an IP partner and
+  // carry royalty / eligibility / approval / territory / expiry terms.
+  licenseType      LicenseType @default(public_domain)
+  royaltyRate      Float       @default(0)
+  requiresApproval Boolean     @default(false)
+  allowedPlans     String[]    @default(["free", "basic", "pro", "enterprise"])
+  territories      String[]    @default([])
+  expiresAt        DateTime?
+  ipPartnerId      String?
+  ipPartner        IpPartner?  @relation(fields: [ipPartnerId], references: [id])
+
+  media            AssetMedia[]
   createdAt        DateTime    @default(now())
   usages           AssetUsage[]
+}
+
+model AssetMedia {
+  id        String      @id @default(cuid())
+  assetId   String
+  asset     PdAsset     @relation(fields: [assetId], references: [id])
+  kind      MediaKind
+  format    MediaFormat
+  label     String
+  url       String
+  posterUrl String?
+  width     Int?
+  height    Int?
 }
 
 model App {
@@ -134,14 +194,16 @@ model Listing {
 }
 
 model Purchase {
-  id          String   @id @default(cuid())
-  listingId   String
-  listing     Listing  @relation(fields: [listingId], references: [id])
-  buyerId     String
-  buyer       User     @relation(fields: [buyerId], references: [id])
-  grossMinor  Int
-  feeMinor    Int
-  payoutMinor Int
-  currency    String   @default("USD")
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  listingId    String
+  listing      Listing  @relation(fields: [listingId], references: [id])
+  buyerId      String
+  buyer        User     @relation(fields: [buyerId], references: [id])
+  grossMinor   Int
+  feeMinor     Int
+  // Royalty paid to the IP partner for licensed assets (0 for public domain).
+  royaltyMinor Int      @default(0)
+  payoutMinor  Int
+  currency     String   @default("USD")
+  createdAt    DateTime @default(now())
 }

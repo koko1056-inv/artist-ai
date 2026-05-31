@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Nova the Explorer — astronaut character">
+  <defs>
+    <linearGradient id="nvg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b3bd6"/>
+      <stop offset="1" stop-color="#2a1b6e"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#nvg)"/>
+  <!-- stars -->
+  <g fill="#ffe6a0">
+    <circle cx="60" cy="60" r="4"/><circle cx="340" cy="80" r="5"/>
+    <circle cx="300" cy="220" r="3"/><circle cx="90" cy="230" r="4"/>
+    <circle cx="360" cy="160" r="3"/>
+  </g>
+  <!-- planet ring -->
+  <ellipse cx="320" cy="60" rx="40" ry="12" fill="none" stroke="#7fe3d0" stroke-width="4" opacity="0.7"/>
+  <circle cx="320" cy="60" r="20" fill="#7fe3d0"/>
+  <!-- astronaut -->
+  <g transform="translate(165,150)">
+    <!-- body -->
+    <rect x="-46" y="40" width="92" height="80" rx="34" fill="#eef2ff"/>
+    <!-- chest panel -->
+    <rect x="-18" y="62" width="36" height="26" rx="6" fill="#5b3bd6"/>
+    <circle cx="-8" cy="75" r="4" fill="#7fe3d0"/><circle cx="8" cy="75" r="4" fill="#ffe6a0"/>
+    <!-- helmet -->
+    <circle r="48" cy="0" fill="#eef2ff"/>
+    <circle r="38" cy="0" fill="#1b2150"/>
+    <!-- visor shine -->
+    <path d="M-26 -10 q12 -18 34 -8 q-18 2 -34 8 z" fill="#7fe3d0" opacity="0.8"/>
+    <circle cx="14" cy="6" r="5" fill="#ffe6a0"/>
+    <!-- arms -->
+    <rect x="-66" y="46" width="22" height="54" rx="11" fill="#eef2ff"/>
+    <rect x="44" y="46" width="22" height="54" rx="11" fill="#eef2ff"/>
+  </g>
+  <!-- little flag/banner -->
+  <g transform="translate(250,150)">
+    <rect x="0" y="-40" width="4" height="80" fill="#cfd6ff"/>
+    <path d="M4 -40 h40 l-10 12 l10 12 h-40 z" fill="#ff6b9a"/>
+  </g>
+</svg>
