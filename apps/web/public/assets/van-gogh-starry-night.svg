@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Swirling starry night motif">
+  <defs>
+    <linearGradient id="vgg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b3a73"/>
+      <stop offset="1" stop-color="#0d1f44"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#vgg)"/>
+  <!-- big swirl -->
+  <g fill="none" stroke="#e8c84a" stroke-width="5" stroke-linecap="round" opacity="0.9">
+    <path d="M150 120 q40 -50 80 0 q-30 60 -80 30 q-44 -28 0 -70"/>
+    <path d="M160 120 q26 -30 52 0 q-20 38 -52 18"/>
+  </g>
+  <!-- moon -->
+  <circle cx="320" cy="80" r="30" fill="#f3e08a"/>
+  <circle cx="320" cy="80" r="30" fill="none" stroke="#e8c84a" stroke-width="6" opacity="0.5"/>
+  <!-- stars -->
+  <g fill="#f3e08a">
+    <circle cx="70" cy="70" r="12"/><circle cx="70" cy="70" r="20" fill="none" stroke="#e8c84a" stroke-width="3" opacity="0.5"/>
+    <circle cx="120" cy="200" r="9"/>
+    <circle cx="260" cy="160" r="8"/>
+    <circle cx="350" cy="190" r="10"/>
+  </g>
+  <!-- cypress -->
+  <path d="M40 300 q14 -120 30 -150 q16 30 30 150 z" fill="#10331f"/>
+  <!-- rolling hills -->
+  <path d="M0 270 q120 -24 220 0 t180 0 v30 H0 Z" fill="#16407a"/>
+</svg>

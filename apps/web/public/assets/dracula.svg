@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Castle, bat and moon motif">
+  <defs>
+    <linearGradient id="drg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a1430"/>
+      <stop offset="1" stop-color="#190818"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#drg)"/>
+  <!-- full moon -->
+  <circle cx="300" cy="90" r="50" fill="#e9d9b0"/>
+  <circle cx="285" cy="80" r="8" fill="#d8c79a" opacity="0.6"/>
+  <circle cx="312" cy="104" r="6" fill="#d8c79a" opacity="0.6"/>
+  <!-- castle silhouette -->
+  <g fill="#120610">
+    <rect x="40" y="170" width="200" height="110"/>
+    <rect x="40" y="140" width="34" height="40"/>
+    <rect x="206" y="130" width="34" height="50"/>
+    <rect x="120" y="120" width="40" height="60"/>
+    <!-- crenellations -->
+    <rect x="120" y="112" width="8" height="12"/><rect x="136" y="112" width="8" height="12"/><rect x="152" y="112" width="8" height="12"/>
+    <!-- lit windows -->
+  </g>
+  <rect x="134" y="150" width="12" height="18" fill="#e9b84a"/>
+  <rect x="50" y="200" width="12" height="18" fill="#e9b84a"/>
+  <!-- bat -->
+  <g transform="translate(150,80)" fill="#120610">
+    <path d="M0 0 q-26 -22 -52 -6 q18 2 22 14 q-20 -6 -30 6 q26 6 34 18 q12 -14 26 -14
+             q14 0 26 14 q8 -12 34 -18 q-10 -12 -30 -6 q4 -12 22 -14 q-26 -16 -52 6 q-6 -8 -12 -8 q-6 0 -12 8 z"/>
+  </g>
+</svg>

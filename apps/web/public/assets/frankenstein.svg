@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Lightning, flask and stitched heart motif">
+  <defs>
+    <linearGradient id="frg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#234034"/>
+      <stop offset="1" stop-color="#10211b"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#frg)"/>
+  <!-- storm clouds -->
+  <g fill="#0c1814" opacity="0.7">
+    <ellipse cx="120" cy="50" rx="80" ry="28"/>
+    <ellipse cx="240" cy="44" rx="70" ry="24"/>
+  </g>
+  <!-- lightning -->
+  <path d="M150 60 L120 140 H150 L110 240 L185 130 H150 L180 60 Z"
+        fill="#bfe36a" stroke="#e7ffb0" stroke-width="3" stroke-linejoin="round"/>
+  <!-- erlenmeyer flask -->
+  <g transform="translate(285,150)">
+    <path d="M-12 -40 h24 v34 l26 50 a8 8 0 0 1 -7 12 h-62 a8 8 0 0 1 -7 -12 l26 -50 z"
+          fill="#cfe0d8" opacity="0.35" stroke="#bfe36a" stroke-width="4"/>
+    <path d="M-30 36 h60 l8 16 a8 8 0 0 1 -7 12 h-62 a8 8 0 0 1 -7 -12 z" fill="#bfe36a" opacity="0.7"/>
+    <circle cx="-6" cy="44" r="4" fill="#e7ffb0"/>
+    <circle cx="10" cy="52" r="3" fill="#e7ffb0"/>
+  </g>
+  <!-- stitched heart -->
+  <g transform="translate(80,210)">
+    <path d="M0 14 C-26 -12, -52 12, 0 46 C52 12, 26 -12, 0 14 Z" fill="#9fce5a"/>
+    <g stroke="#10211b" stroke-width="2.5">
+      <line x1="-14" y1="10" x2="-14" y2="30"/><line x1="-20" y1="14" x2="-8" y2="14"/>
+      <line x1="0" y1="20" x2="0" y2="40"/><line x1="-6" y1="24" x2="6" y2="24"/>
+    </g>
+  </g>
+</svg>

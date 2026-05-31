@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Deerstalker, pipe and magnifier motif">
+  <defs>
+    <linearGradient id="shg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5d4632"/>
+      <stop offset="1" stop-color="#33261a"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#shg)"/>
+  <!-- fog bands -->
+  <g fill="#e7d9bf" opacity="0.08">
+    <rect x="0" y="90" width="400" height="20"/>
+    <rect x="0" y="150" width="400" height="16"/>
+    <rect x="0" y="210" width="400" height="22"/>
+  </g>
+  <!-- deerstalker hat -->
+  <g transform="translate(150,120)" fill="#e7d9bf">
+    <ellipse cx="0" cy="40" rx="78" ry="18"/>
+    <path d="M-58 40 q-2 -56 58 -56 q60 0 58 56 z"/>
+    <path d="M-78 30 q-18 8 0 16 z"/>
+    <path d="M78 30 q18 8 0 16 z"/>
+    <rect x="-6" y="-30" width="12" height="20" rx="6" fill="#33261a"/>
+  </g>
+  <!-- magnifier -->
+  <g transform="translate(285,205)">
+    <circle r="40" fill="#cfe0d8" opacity="0.35" stroke="#e7d9bf" stroke-width="8"/>
+    <rect x="26" y="26" width="56" height="15" rx="7" transform="rotate(45 26 26)" fill="#e7d9bf"/>
+  </g>
+  <!-- pipe -->
+  <g transform="translate(70,215)" fill="none" stroke="#e7d9bf" stroke-width="8" stroke-linecap="round">
+    <path d="M0 0 h54 a18 18 0 0 1 0 0"/>
+    <path d="M54 0 q22 0 22 -22"/>
+  </g>
+</svg>

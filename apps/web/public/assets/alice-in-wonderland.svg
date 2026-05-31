@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Pocket watch and teacup motif">
+  <defs>
+    <linearGradient id="awg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f6b5a"/>
+      <stop offset="1" stop-color="#103b31"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#awg)"/>
+  <!-- pocket watch -->
+  <g transform="translate(135,140)">
+    <circle r="58" fill="#f1e7cf" stroke="#caa85a" stroke-width="6"/>
+    <circle r="58" fill="none" stroke="#caa85a" stroke-width="2" opacity="0.5" transform="scale(0.82)"/>
+    <rect x="-7" y="-78" width="14" height="16" rx="4" fill="#caa85a"/>
+    <line x1="0" y1="0" x2="0" y2="-34" stroke="#103b31" stroke-width="5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="26" y2="10" stroke="#103b31" stroke-width="5" stroke-linecap="round"/>
+    <circle r="5" fill="#103b31"/>
+  </g>
+  <!-- teacup -->
+  <g transform="translate(270,185)" fill="#f1e7cf">
+    <path d="M-44 0 h88 l-12 44 a32 14 0 0 1 -64 0 z"/>
+    <ellipse cx="0" cy="0" rx="44" ry="12" fill="#dccba0"/>
+    <path d="M44 8 q34 6 16 40 q-8 14 -22 8" fill="none" stroke="#f1e7cf" stroke-width="8"/>
+    <!-- steam -->
+    <path d="M-10 -14 q-8 -16 4 -28" fill="none" stroke="#f1e7cf" stroke-width="4" opacity="0.7"/>
+    <path d="M12 -14 q8 -16 -4 -28" fill="none" stroke="#f1e7cf" stroke-width="4" opacity="0.7"/>
+  </g>
+</svg>

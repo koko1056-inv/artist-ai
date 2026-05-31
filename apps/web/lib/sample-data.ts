@@ -67,6 +67,70 @@ export const SAMPLE_STYLE_GUIDES: Record<string, StyleGuide> = {
     prohibitions: [],
     requiredTransformations: [],
   },
+  "sherlock-holmes": {
+    label: "Sherlock Holmes (early stories)",
+    provenanceNotice:
+      "Based on the public-domain early Sherlock Holmes stories by Arthur Conan Doyle.",
+    prohibitions: [
+      "modern film/TV likenesses (e.g. BBC/Warner adaptations)",
+      "trademarked modern adaptations",
+    ],
+    requiredTransformations: [],
+  },
+  "alice-in-wonderland": {
+    label: "Alice in Wonderland (Tenniel)",
+    provenanceNotice:
+      "Based on Lewis Carroll's public-domain Alice's Adventures in Wonderland and John Tenniel's illustrations.",
+    prohibitions: ["Disney 1951 film styling"],
+    requiredTransformations: [],
+  },
+  dracula: {
+    label: "Dracula (Bram Stoker, 1897)",
+    provenanceNotice: "Based on Bram Stoker's public-domain novel Dracula (1897).",
+    prohibitions: [
+      "Bela Lugosi / Universal film likeness",
+      "modern film adaptations",
+    ],
+    requiredTransformations: [],
+  },
+  frankenstein: {
+    label: "Frankenstein's Creature (1818 novel)",
+    provenanceNotice:
+      "Based on Mary Shelley's public-domain novel Frankenstein (1818).",
+    prohibitions: [
+      "Universal film monster look (flat head, neck bolts, green skin)",
+      "Boris Karloff likeness",
+    ],
+    requiredTransformations: [],
+  },
+  "wizard-of-oz": {
+    label: "The Wizard of Oz (1900 book)",
+    provenanceNotice:
+      "Based on L. Frank Baum's public-domain novel and W. W. Denslow's illustrations (1900).",
+    prohibitions: ["1939 MGM film elements (ruby slippers, specific film likenesses)"],
+    requiredTransformations: [],
+  },
+  "robin-hood": {
+    label: "Robin Hood (folklore)",
+    provenanceNotice:
+      "Based on the public-domain Robin Hood folklore and early literary versions.",
+    prohibitions: ["Disney 1973 film styling"],
+    requiredTransformations: [],
+  },
+  pinocchio: {
+    label: "Pinocchio (Collodi, 1883)",
+    provenanceNotice:
+      "Based on Carlo Collodi's public-domain novel The Adventures of Pinocchio (1883).",
+    prohibitions: ["Disney 1940 film styling"],
+    requiredTransformations: [],
+  },
+  "van-gogh-starry-night": {
+    label: "Van Gogh — The Starry Night",
+    provenanceNotice:
+      "Based on Vincent van Gogh's public-domain painting The Starry Night (1889).",
+    prohibitions: [],
+    requiredTransformations: [],
+  },
 };
 
 /** The PD asset kind in the DB seed uses snake_case; the client contract uses kebab. */
@@ -130,6 +194,77 @@ export const SAMPLE_ASSETS: PdAsset[] = [
     thumbnailUrl: "/assets/hokusai-great-wave.svg",
     provenanceNotice:
       "Based on Katsushika Hokusai's public-domain woodblock print.",
+    publicDomainIn: ["US", "EU", "JP"],
+  },
+  {
+    id: "sherlock-holmes",
+    label: "Sherlock Holmes (early stories)",
+    kind: "character",
+    thumbnailUrl: "/assets/sherlock-holmes.svg",
+    provenanceNotice:
+      "Based on the public-domain early Sherlock Holmes stories by Arthur Conan Doyle.",
+    publicDomainIn: ["US", "EU"],
+  },
+  {
+    id: "alice-in-wonderland",
+    label: "Alice in Wonderland (Tenniel)",
+    kind: "character",
+    thumbnailUrl: "/assets/alice-in-wonderland.svg",
+    provenanceNotice:
+      "Based on Lewis Carroll's public-domain Alice's Adventures in Wonderland and John Tenniel's illustrations.",
+    publicDomainIn: ["US", "EU", "JP"],
+  },
+  {
+    id: "dracula",
+    label: "Dracula (Bram Stoker, 1897)",
+    kind: "character",
+    thumbnailUrl: "/assets/dracula.svg",
+    provenanceNotice: "Based on Bram Stoker's public-domain novel Dracula (1897).",
+    publicDomainIn: ["US", "EU", "JP"],
+  },
+  {
+    id: "frankenstein",
+    label: "Frankenstein's Creature (1818 novel)",
+    kind: "character",
+    thumbnailUrl: "/assets/frankenstein.svg",
+    provenanceNotice:
+      "Based on Mary Shelley's public-domain novel Frankenstein (1818).",
+    publicDomainIn: ["US", "EU", "JP"],
+  },
+  {
+    id: "wizard-of-oz",
+    label: "The Wizard of Oz (1900 book)",
+    kind: "character",
+    thumbnailUrl: "/assets/wizard-of-oz.svg",
+    provenanceNotice:
+      "Based on L. Frank Baum's public-domain novel and W. W. Denslow's illustrations (1900).",
+    publicDomainIn: ["US", "EU", "JP"],
+  },
+  {
+    id: "robin-hood",
+    label: "Robin Hood (folklore)",
+    kind: "character",
+    thumbnailUrl: "/assets/robin-hood.svg",
+    provenanceNotice:
+      "Based on the public-domain Robin Hood folklore and early literary versions.",
+    publicDomainIn: ["US", "EU", "JP"],
+  },
+  {
+    id: "pinocchio",
+    label: "Pinocchio (Collodi, 1883)",
+    kind: "character",
+    thumbnailUrl: "/assets/pinocchio.svg",
+    provenanceNotice:
+      "Based on Carlo Collodi's public-domain novel The Adventures of Pinocchio (1883).",
+    publicDomainIn: ["US", "EU", "JP"],
+  },
+  {
+    id: "van-gogh-starry-night",
+    label: "Van Gogh — The Starry Night",
+    kind: "artwork",
+    thumbnailUrl: "/assets/van-gogh-starry-night.svg",
+    provenanceNotice:
+      "Based on Vincent van Gogh's public-domain painting The Starry Night (1889).",
     publicDomainIn: ["US", "EU", "JP"],
   },
 ];

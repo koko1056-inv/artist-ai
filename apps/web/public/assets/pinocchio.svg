@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Marionette strings and long nose motif">
+  <defs>
+    <linearGradient id="pkg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9a5a2b"/>
+      <stop offset="1" stop-color="#5e3417"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#pkg)"/>
+  <!-- control bar + strings -->
+  <rect x="120" y="26" width="160" height="12" rx="6" fill="#3c220f"/>
+  <g stroke="#e9dcc1" stroke-width="2" opacity="0.8">
+    <line x1="140" y1="34" x2="120" y2="150"/>
+    <line x1="200" y1="34" x2="200" y2="120"/>
+    <line x1="260" y1="34" x2="285" y2="150"/>
+  </g>
+  <!-- wooden head -->
+  <g transform="translate(200,150)">
+    <circle r="56" fill="#e0b277" stroke="#3c220f" stroke-width="4"/>
+    <!-- cap -->
+    <path d="M-54 -16 q54 -64 108 0 q-54 -18 -108 0 z" fill="#c9543d"/>
+    <circle cx="50" cy="-32" r="7" fill="#e7c34a"/>
+    <!-- eyes -->
+    <circle cx="-16" cy="-4" r="6" fill="#3c220f"/>
+    <circle cx="16" cy="-4" r="6" fill="#3c220f"/>
+    <!-- long nose -->
+    <path d="M0 8 l92 6 -92 12 z" fill="#d49a5a" stroke="#3c220f" stroke-width="2"/>
+    <!-- smile -->
+    <path d="M-18 30 q18 16 36 0" fill="none" stroke="#3c220f" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>

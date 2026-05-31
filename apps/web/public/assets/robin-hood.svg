@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Bow, arrow and feathered cap motif">
+  <defs>
+    <linearGradient id="rhg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f5a2a"/>
+      <stop offset="1" stop-color="#163316"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#rhg)"/>
+  <!-- target -->
+  <g transform="translate(305,150)">
+    <circle r="56" fill="#e7ddc4"/>
+    <circle r="42" fill="#c9543d"/>
+    <circle r="28" fill="#e7ddc4"/>
+    <circle r="14" fill="#c9543d"/>
+  </g>
+  <!-- bow -->
+  <g transform="translate(110,150)" stroke="#caa85a" fill="none">
+    <path d="M0 -90 Q-70 0 0 90" stroke-width="9" stroke-linecap="round"/>
+    <line x1="0" y1="-90" x2="0" y2="90" stroke="#e7ddc4" stroke-width="3"/>
+  </g>
+  <!-- arrow -->
+  <g transform="translate(110,150)" stroke="#e7ddc4" stroke-width="6" stroke-linecap="round">
+    <line x1="0" y1="0" x2="180" y2="0"/>
+    <path d="M180 0 l-16 -10 m16 10 l-16 10" fill="none"/>
+    <path d="M-2 0 l-22 -12 m22 12 l-22 12" stroke="#caa85a" stroke-width="5"/>
+  </g>
+  <!-- feathered cap -->
+  <g transform="translate(70,70)" fill="#3f7a39">
+    <path d="M-40 18 q40 -34 80 0 q-40 -8 -80 0 z"/>
+    <path d="M30 6 q26 -30 40 -34 q-6 22 -22 38 z" fill="#c9543d"/>
+  </g>
+</svg>
