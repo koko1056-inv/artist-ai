@@ -89,47 +89,47 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <SectionTitle
-        eyebrow="Dashboard"
-        title="Your creator overview"
-        subtitle="Plan, audience, payouts, usage against your cost guardrails, and revenue."
+        eyebrow="マイページ ✨"
+        title="クリエイターの ホーム"
+        subtitle="プラン・オーディエンス・受け取り・AI予算と上限・売上を ひと目でチェック 💖"
       />
 
       {/* Account / subscription state */}
       {!session ? (
-        <Card className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-ink">
-            You&apos;re browsing as a guest. Sign in to subscribe, publish, and get paid.
+        <Card className="flex flex-wrap items-center justify-between gap-3 bg-grad-hero text-white">
+          <p className="text-sm font-semibold">
+            👋 いまは ゲストとして 見ています。サインインして、プランの登録・公開・売上の受け取りを はじめよう！
           </p>
           <a
             href="/signin"
-            className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-strong"
+            className="rounded-full bg-white px-5 py-2 text-sm font-extrabold text-brand shadow-sm hover:opacity-90"
           >
-            Sign in
+            サインイン →
           </a>
         </Card>
       ) : !paying ? (
-        <Card className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-ink">
-            Signed in as <span className="font-semibold">{session.email}</span> on the Free
-            plan. Subscribe to publish and sell your apps.
+        <Card className="flex flex-wrap items-center justify-between gap-3 bg-grad-brand text-white">
+          <p className="text-sm font-semibold">
+            🌱 <span className="font-extrabold">{session.email}</span> として Freeプランで サインイン中。
+            プランに登録すると、アプリの公開と販売ができます。
           </p>
           <a
             href="/pricing"
-            className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-strong"
+            className="rounded-full bg-white px-5 py-2 text-sm font-extrabold text-brand shadow-sm hover:opacity-90"
           >
-            Choose a plan
+            プランを選ぶ 🎉
           </a>
         </Card>
       ) : (
         <Card className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-ink">
-            Signed in as <span className="font-semibold">{session.email}</span> ·{" "}
-            <span className="capitalize font-semibold">{session.plan}</span> plan ·
-            publishing enabled.
+            ✅ <span className="font-bold">{session.email}</span> として ·{" "}
+            <span className="capitalize font-bold text-brand">{session.plan}</span> プランで サインイン中 ·
+            公開が 有効です。
           </p>
           <form action="/api/auth/signout" method="post">
             <button className="rounded-full border border-line px-4 py-2 text-sm font-semibold text-ink hover:border-brand">
-              Sign out
+              サインアウト
             </button>
           </form>
         </Card>
@@ -137,47 +137,47 @@ export default async function DashboardPage() {
 
       {/* Audience (north-star) + payouts */}
       <div className="grid gap-5 md:grid-cols-2">
-        <Card>
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-            Audience · weekly active users
+        <Card className="bg-[color:var(--color-sky-soft)]">
+          <p className="text-xs font-extrabold uppercase tracking-wide text-[color:var(--color-sky)]">
+            📈 オーディエンス · 週間アクティブユーザー
           </p>
-          <p className="mt-1 text-2xl font-extrabold text-ink">
-            {wau.toLocaleString("en-US")}
+          <p className="mt-1 text-4xl font-black text-ink">
+            {wau.toLocaleString("ja-JP")}
           </p>
           <p className="mt-1 text-sm text-ink-soft">
-            Across {liveApps.toLocaleString("en-US")} live app
-            {liveApps === 1 ? "" : "s"}. This is the metric that matters: are published apps
-            actually used daily?
+            公開中の {liveApps.toLocaleString("ja-JP")} 個のアプリ全体。
+            いちばん大事なのは、公開したアプリが毎日ちゃんと使われているか です。
           </p>
           <p className="mt-2 text-xs text-ink-soft">
-            Dev-grade, in-memory counter — open a published app to see it move; production
-            uses a durable analytics pipeline.
+            開発向けのメモリ内カウンターです。公開アプリを開くと数字が動きます。本番では 永続的な分析パイプラインを使います。
           </p>
         </Card>
 
-        <Card>
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-            Payouts
+        <Card className="bg-[color:var(--color-mint-soft)]">
+          <p className="text-xs font-extrabold uppercase tracking-wide text-[color:var(--color-mint)]">
+            💰 受け取り
           </p>
           {session?.payoutConnected ? (
             <>
-              <p className="mt-1 text-2xl font-extrabold text-ink">Connected</p>
+              <p className="mt-1 text-4xl font-black text-ink">接続済み 🎉</p>
               <p className="mt-1 text-sm text-ink-soft">
-                Earnings are released to your connected account on the payout schedule.
+                売上は 受け取りスケジュールに沿って、接続済みの口座へ お支払いされます。
               </p>
-              <Badge tone="success">Ready to receive payouts</Badge>
+              <div className="mt-2">
+                <Badge tone="success">受け取りOK ✓</Badge>
+              </div>
             </>
           ) : (
             <>
-              <p className="mt-1 text-2xl font-extrabold text-ink">Not connected</p>
+              <p className="mt-1 text-4xl font-black text-ink">未接続</p>
               <p className="mt-1 text-sm text-ink-soft">
-                Connect a payout account to receive your share of marketplace sales.
+                受け取り口座を接続すると、マーケットプレイス売上の あなたの取り分を 受け取れます。
               </p>
               <a
                 href={session ? "/api/payouts/connect" : "/signin"}
-                className="mt-3 inline-block rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+                className="btn-grad mt-3 inline-block rounded-full px-5 py-2 text-sm font-extrabold"
               >
-                Connect payouts
+                受け取り口座を接続 →
               </a>
             </>
           )}
@@ -186,95 +186,93 @@ export default async function DashboardPage() {
 
       <div className="grid gap-5 md:grid-cols-3">
         <Card>
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-            Current plan
+          <p className="text-xs font-extrabold uppercase tracking-wide text-brand">
+            🏆 現在のプラン
           </p>
-          <p className="mt-1 text-2xl font-extrabold text-ink">
+          <p className="mt-1 text-3xl font-black text-ink">
             {translate(plan.nameKey as Parameters<typeof translate>[0])}
           </p>
           <p className="mt-1 text-sm text-ink-soft">
             {plan.priceMinor > 0
-              ? `${formatMoney(money(plan.priceMinor, plan.currency))}/mo`
-              : "Free"}{" "}
-            · {paying ? "sells on marketplace" : "publishing locked"}
+              ? `${formatMoney(money(plan.priceMinor, plan.currency))}/月`
+              : "無料"}{" "}
+            · {paying ? "マーケットプレイスで販売中" : "公開はロック中"}
           </p>
           <div className="mt-3">
             {decision.allowed ? (
-              <Badge tone="success">Generations available</Badge>
+              <Badge tone="success">生成できます ✨</Badge>
             ) : (
               <Badge tone="warn">
-                Blocked:{" "}
+                ストップ:{" "}
                 {decision.reason === "quota-exhausted"
-                  ? "quota exhausted"
-                  : "cost ceiling reached"}
+                  ? "生成回数の上限に到達"
+                  : "AI予算の上限に到達"}
               </Badge>
             )}
           </div>
         </Card>
 
         <Card>
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-            Generation quota
+          <p className="text-xs font-extrabold uppercase tracking-wide text-[color:var(--color-sun)]">
+            🎯 生成回数
           </p>
-          <p className="mt-1 text-2xl font-extrabold text-ink">
-            {usage.generationsUsed.toLocaleString("en-US")}
+          <p className="mt-1 text-3xl font-black text-ink">
+            {usage.generationsUsed.toLocaleString("ja-JP")}
             <span className="text-base font-medium text-ink-soft">
               {" "}
-              / {quota.toLocaleString("en-US")}
+              / {quota.toLocaleString("ja-JP")}
             </span>
           </p>
-          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-paper-2">
+          <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-paper-2">
             <div
-              className="h-full bg-brand"
+              className="h-full rounded-full bg-grad-sun"
               style={{ width: `${quotaPct}%` }}
             />
           </div>
           <p className="mt-2 text-sm text-ink-soft">
-            {decision.remainingGenerations.toLocaleString("en-US")} generations
-            remaining this period.
+            今期は あと {decision.remainingGenerations.toLocaleString("ja-JP")} 回 生成できます。
           </p>
         </Card>
 
         <Card>
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-            AI spend vs ceiling
+          <p className="text-xs font-extrabold uppercase tracking-wide text-accent">
+            🤖 AI予算と上限
           </p>
-          <p className="mt-1 text-2xl font-extrabold text-ink">
+          <p className="mt-1 text-3xl font-black text-ink">
             {formatMoney(money(usage.aiSpendMinor, plan.currency))}
             <span className="text-base font-medium text-ink-soft">
               {" "}
               / {formatMoney(money(ceilingMinor, plan.currency))}
             </span>
           </p>
-          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-paper-2">
+          <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-paper-2">
             <div
-              className="h-full bg-accent"
+              className="h-full rounded-full bg-grad-mint"
               style={{ width: `${spendPct}%` }}
             />
           </div>
           <p className="mt-2 text-sm text-ink-soft">
-            Ceiling is {Math.round(AI_COST_CEILING_FRACTION * 100)}% of your plan
-            price.
+            上限は プラン料金の {Math.round(AI_COST_CEILING_FRACTION * 100)}% です。
           </p>
         </Card>
       </div>
 
       <Card>
-        <h3 className="text-lg font-bold text-ink">Revenue summary</h3>
+        <h3 className="text-xl font-black text-ink">💸 売上サマリー</h3>
         <p className="mt-1 text-sm text-ink-soft">
-          Marketplace take rate of {Math.round(MARKETPLACE_TAKE_RATE * 100)}% applied
-          per sale. Licensed IP also pays a royalty to the rights holder.
+          1件の販売ごとに マーケットプレイス手数料 {Math.round(MARKETPLACE_TAKE_RATE * 100)}% が かかります。
+          ライセンスIPの場合は、権利者へ IPロイヤリティも お支払いします。
         </p>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[40rem] text-sm">
             <thead>
               <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-soft">
-                <th className="py-2 pr-4 font-semibold">App</th>
-                <th className="py-2 pr-4 font-semibold">Sales</th>
-                <th className="py-2 pr-4 font-semibold">Gross</th>
-                <th className="py-2 pr-4 font-semibold">Platform fee</th>
-                <th className="py-2 pr-4 font-semibold">IP royalty</th>
-                <th className="py-2 font-semibold">Your payout</th>
+                <th className="py-2 pr-4 font-bold">アプリ</th>
+                <th className="py-2 pr-4 font-bold">販売数</th>
+                <th className="py-2 pr-4 font-bold">総額</th>
+                <th className="py-2 pr-4 font-bold">プラットフォーム手数料</th>
+                <th className="py-2 pr-4 font-bold">IPロイヤリティ</th>
+                <th className="py-2 font-bold">あなたの取り分</th>
               </tr>
             </thead>
             <tbody>
@@ -284,7 +282,7 @@ export default async function DashboardPage() {
                     {r.title}
                     {r.licensed ? (
                       <span className="ml-2 align-middle">
-                        <Badge tone="warn">Licensed</Badge>
+                        <Badge tone="warn">ライセンス</Badge>
                       </span>
                     ) : null}
                   </td>
@@ -299,13 +297,13 @@ export default async function DashboardPage() {
                       </span>
                     ) : null}
                   </td>
-                  <td className="py-2 font-semibold text-ink">{r.payout}</td>
+                  <td className="py-2 font-bold text-brand">{r.payout}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="font-semibold text-ink">
-                <td className="py-2 pr-4">Total</td>
+              <tr className="font-black text-ink">
+                <td className="py-2 pr-4">合計</td>
                 <td className="py-2 pr-4" />
                 <td className="py-2 pr-4">
                   {formatMoney(money(grossTotal, "USD"))}
@@ -314,7 +312,7 @@ export default async function DashboardPage() {
                 <td className="py-2 pr-4">
                   {formatMoney(money(royaltyTotal, "USD"))}
                 </td>
-                <td className="py-2">{formatMoney(money(payoutTotal, "USD"))}</td>
+                <td className="py-2 text-brand">{formatMoney(money(payoutTotal, "USD"))}</td>
               </tr>
             </tfoot>
           </table>

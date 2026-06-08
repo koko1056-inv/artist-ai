@@ -24,40 +24,43 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="min-h-screen bg-paper text-ink">
-        <header className="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur">
-          <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">
-            <Link href="/" className="mr-2 text-lg font-extrabold tracking-tight">
-              <span className="text-brand">{translate("app.name")}</span>
+        <header className="sticky top-0 z-20 border-b border-line bg-paper/80 backdrop-blur">
+          <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+            <Link
+              href="/"
+              className="mr-1 flex items-center gap-1.5 text-lg font-black tracking-tight"
+            >
+              <span aria-hidden className="text-xl">🎨</span>
+              <span className="text-grad">{translate("app.name")}</span>
             </Link>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-ink-soft">
+            <div className="flex flex-wrap items-center gap-1 text-sm font-bold text-ink-soft">
               {NAV.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-md px-1 py-0.5 transition-colors hover:text-brand"
+                  className="rounded-full px-3 py-1.5 transition-colors hover:bg-brand-soft hover:text-brand-strong"
                 >
                   {translate(item.key)}
                 </Link>
               ))}
-              {/* No i18n key for partners yet — plain English label. */}
               <Link
                 href="/partners"
-                className="rounded-md px-1 py-0.5 transition-colors hover:text-brand"
+                className="rounded-full px-3 py-1.5 transition-colors hover:bg-accent-soft hover:text-accent"
               >
-                Partners
+                パートナー
               </Link>
               <Link
                 href="/signin"
-                className="rounded-md px-1 py-0.5 transition-colors hover:text-brand"
+                className="rounded-full px-3 py-1.5 transition-colors hover:bg-[color:var(--color-sky-soft)] hover:text-[color:var(--color-sky)]"
               >
-                Account
+                アカウント
               </Link>
             </div>
             <Link
               href="/pricing"
-              className="ml-auto rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-brand-strong"
+              className="btn-grad ml-auto rounded-full px-5 py-2 text-sm font-extrabold"
             >
-              Get started
+              はじめる ✨
             </Link>
           </nav>
         </header>
@@ -66,14 +69,16 @@ export default function RootLayout({
 
         <footer className="mt-16 border-t border-line">
           <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-ink-soft">
-            <p className="font-semibold text-ink">{translate("app.name")}</p>
-            <p className="mt-1 max-w-prose">
-              Build lightweight, daily-use apps on public-domain characters with
-              AI-assisted coding. Provenance-labeled, store-fee-free web checkout.
+            <p className="flex items-center gap-1.5 text-base font-black text-ink">
+              <span aria-hidden>🎨</span>
+              <span className="text-grad">{translate("app.name")}</span>
+            </p>
+            <p className="mt-2 max-w-prose">
+              パブリックドメインの名作キャラと一緒に、毎日使える軽量アプリをAIでサクッと開発。
+              出所表示つき、ストア手数料なしのウェブ決済で公開できます。💖
             </p>
             <p className="mt-3 text-xs">
-              Every published app carries a provenance notice and an AI-assistance
-              label. Only public-domain versions of works are used.
+              公開されるすべてのアプリには「出所表示」と「AI制作」ラベルがつきます。作品はパブリックドメイン版のみを使用しています。
             </p>
           </div>
         </footer>

@@ -5,7 +5,7 @@ import { HabitApp } from "./habit-app";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Habit Tracker — PD Forge",
+  title: "習慣トラッカー — PD Forge",
   robots: { index: false },
 };
 
@@ -24,13 +24,18 @@ export default async function HabitRuntimePage({
   if (!config) {
     return (
       <main className="mx-auto max-w-md px-5 py-20 text-center">
-        <h1 className="text-lg font-bold text-neutral-800">This app link looks invalid</h1>
-        <p className="mt-2 text-sm text-neutral-500">
-          The app couldn&apos;t be loaded. Ask the creator for a fresh link, or build your own
-          in the studio.
+        <div className="text-5xl">😢</div>
+        <h1 className="mt-4 text-xl font-black text-ink">
+          このアプリのリンクが無効です
+        </h1>
+        <p className="mt-2 text-sm text-ink-soft">
+          アプリを読み込めませんでした。作った人に新しいリンクをもらうか、スタジオで自分だけのアプリをつくってみよう！
         </p>
-        <a href="/studio" className="mt-6 inline-block rounded-full bg-neutral-900 px-5 py-2 text-sm font-semibold text-white">
-          Open the studio
+        <a
+          href="/studio"
+          className="btn-grad mt-6 inline-block rounded-full px-6 py-2.5 text-sm font-extrabold"
+        >
+          スタジオを開く ✨
         </a>
       </main>
     );

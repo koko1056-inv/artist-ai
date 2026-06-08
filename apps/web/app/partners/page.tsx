@@ -38,22 +38,35 @@ function derivePartners(assets: PdAsset[]): PartnerSummary[] {
   return [...byName.values()];
 }
 
-const STEPS: Array<{ title: string; body: string }> = [
+const STEPS: Array<{
+  emoji: string;
+  title: string;
+  body: string;
+  bg: string;
+}> = [
   {
-    title: "1 · Bring your official IP",
-    body: "Submit your characters, artwork, or worlds. You keep ownership — we license it on the platform under your terms.",
+    emoji: "🎁",
+    title: "1 · IPを預ける",
+    body: "あなたのキャラクター・アートワーク・世界観を登録。権利はあなたのまま。あなたの条件にもとづいて、プラットフォーム上でライセンスします。",
+    bg: "bg-brand-soft",
   },
   {
-    title: "2 · Set your terms",
-    body: "Choose your royalty rate, whether each app needs your approval, which subscription plans may use the IP, and the territories where it's available.",
+    emoji: "⚙️",
+    title: "2 · 条件を決める",
+    body: "ロイヤリティ率、アプリごとの承認の要否、利用できるサブスクプラン、提供地域を、あなたが自由に設定できます。",
+    bg: "bg-accent-soft",
   },
   {
-    title: "3 · We handle creation & review",
-    body: "Creators build daily-use apps with your IP in the Studio. Every app passes automated review, and approval-required IP waits for your sign-off before going live.",
+    emoji: "🪄",
+    title: "3 · 制作とレビューはおまかせ",
+    body: "クリエイターがスタジオであなたのIPを使い、毎日使えるアプリを制作。すべて自動レビューを通過し、承認が必要なIPはあなたのサインオフを待ってから公開されます。",
+    bg: "bg-[color:var(--color-mint-soft)]",
   },
   {
-    title: "4 · Payout & provenance",
-    body: "We split each sale automatically: platform fee, your IP royalty, and the creator's payout. Every listing carries a credit line and provenance notice.",
+    emoji: "💰",
+    title: "4 · 報酬と出所表示",
+    body: "売上は自動で分配。プラットフォーム手数料、あなたのIPロイヤリティ、クリエイターの取り分にきちんと分けます。すべての公開アプリに出所表示とクレジットがつきます。",
+    bg: "bg-[color:var(--color-sun-soft)]",
   },
 ];
 
@@ -64,25 +77,30 @@ export default async function PartnersPage() {
   return (
     <div className="space-y-10">
       <SectionTitle
-        eyebrow="Partners"
-        title="Bring your IP to PD Forge"
-        subtitle="Open your official characters to a community of creators building lightweight, daily-use apps — on your terms, with royalties and provenance handled for you."
+        eyebrow="パートナー募集"
+        title="あなたのIPを、PD Forgeへ 🤝"
+        subtitle="あなたの公式キャラクターを、毎日使える軽量アプリをつくるクリエイターたちに開放しませんか。条件はすべてあなた次第。ロイヤリティと出所表示はこちらでまるごと管理します。"
       />
 
       <div className="grid gap-5 sm:grid-cols-2">
         {STEPS.map((step) => (
-          <Card key={step.title}>
-            <h3 className="font-semibold text-ink">{step.title}</h3>
+          <Card key={step.title} className={step.bg}>
+            <h3 className="flex items-center gap-2 text-lg font-black text-ink">
+              <span aria-hidden className="text-2xl">
+                {step.emoji}
+              </span>
+              {step.title}
+            </h3>
             <p className="mt-2 text-sm text-ink-soft">{step.body}</p>
           </Card>
         ))}
       </div>
 
       <section>
-        <h3 className="text-lg font-bold text-ink">Current partners</h3>
+        <h3 className="text-xl font-black text-ink">現在のパートナー ✨</h3>
         {partners.length === 0 ? (
           <p className="mt-2 text-sm text-ink-soft">
-            No IP partners yet — you could be the first.
+            まだIPパートナーはいません。あなたが第一号になりませんか？
           </p>
         ) : (
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -102,35 +120,34 @@ export default async function PartnersPage() {
                     </div>
                   )}
                   <div>
-                    <p className="font-semibold text-ink">{partner.name}</p>
+                    <p className="font-black text-ink">{partner.name}</p>
                     <p className="text-xs text-ink-soft">
-                      {partner.assetCount} licensed asset
-                      {partner.assetCount === 1 ? "" : "s"}
+                      ライセンス素材 {partner.assetCount} 点
                     </p>
                   </div>
                 </div>
 
                 <ul className="mt-4 space-y-1 text-sm text-ink-soft">
                   <li>
-                    Royalty: {Math.round(partner.royaltyRate * 100)}% of gross
+                    ロイヤリティ：総売上の{Math.round(partner.royaltyRate * 100)}%
                   </li>
                   <li>
-                    Eligible plans:{" "}
+                    対象プラン：{" "}
                     <span className="capitalize">
-                      {partner.allowedPlans.join(", ") || "—"}
+                      {partner.allowedPlans.join("・") || "—"}
                     </span>
                   </li>
-                  <li>Territories: {partner.territories.join(", ") || "—"}</li>
+                  <li>提供地域：{partner.territories.join("・") || "—"}</li>
                   {partner.expiresAt ? (
                     <li>
-                      Licensed through{" "}
-                      {new Date(partner.expiresAt).toLocaleDateString("en-US")}
+                      ライセンス期限：{" "}
+                      {new Date(partner.expiresAt).toLocaleDateString("ja-JP")}
                     </li>
                   ) : null}
                 </ul>
 
                 <div className="mt-4">
-                  <Badge tone="warn">Licensed IP</Badge>
+                  <Badge tone="warn">ライセンスIP</Badge>
                 </div>
               </Card>
             ))}
@@ -138,21 +155,20 @@ export default async function PartnersPage() {
         )}
       </section>
 
-      <Card className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <Card className="bg-grad-hero flex flex-col items-start gap-4 text-white sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-bold text-ink">
-            Apply to partner with us
+          <h3 className="text-xl font-black">
+            パートナー申請はこちら 💌
           </h3>
-          <p className="mt-1 text-sm text-ink-soft">
-            Tell us about your IP and the terms you'd like. We'll set up your
-            partner workspace and onboarding.
+          <p className="mt-1 text-sm text-white/90">
+            あなたのIPと希望する条件を教えてください。パートナー用ワークスペースの準備とオンボーディングをこちらで進めます。
           </p>
         </div>
         <a
           href="mailto:partners@pdforge.example?subject=IP%20partner%20application"
-          className="whitespace-nowrap rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-strong"
+          className="whitespace-nowrap rounded-full bg-white px-6 py-3 text-sm font-extrabold text-brand-strong shadow-md transition-transform hover:-translate-y-0.5"
         >
-          Apply to partner with us
+          パートナー申請 🚀
         </a>
       </Card>
     </div>

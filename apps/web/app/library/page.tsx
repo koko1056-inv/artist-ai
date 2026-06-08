@@ -7,9 +7,9 @@ import { loadAssets } from "../../lib/data";
 export const dynamic = "force-dynamic";
 
 const KIND_LABEL: Record<string, string> = {
-  character: "Character",
-  "historical-figure": "Historical figure",
-  artwork: "Artwork",
+  character: "キャラクター",
+  "historical-figure": "歴史上の人物",
+  artwork: "アート",
 };
 
 /** A short "3 images · 1 3D · 2 audio" summary derived from an asset's media. */
@@ -24,10 +24,10 @@ function mediaSummary(asset: PdAsset): string {
     else audio += 1;
   }
   const parts: string[] = [];
-  if (images > 0) parts.push(`${images} image${images === 1 ? "" : "s"}`);
-  if (threeD > 0) parts.push(`${threeD} 3D`);
-  if (audio > 0) parts.push(`${audio} audio`);
-  return parts.length > 0 ? parts.join(" · ") : "No media";
+  if (images > 0) parts.push(`画像${images}`);
+  if (threeD > 0) parts.push(`3D${threeD}`);
+  if (audio > 0) parts.push(`オーディオ${audio}`);
+  return parts.length > 0 ? parts.join(" · ") : "メディアなし";
 }
 
 function has3d(asset: PdAsset): boolean {
@@ -38,11 +38,11 @@ function LicenseBadge({ asset }: { asset: PdAsset }) {
   if (asset.license.type === "licensed") {
     return (
       <Badge tone="warn">
-        Licensed{asset.license.partnerName ? ` · ${asset.license.partnerName}` : ""}
+        🔖 ライセンス{asset.license.partnerName ? ` · ${asset.license.partnerName}` : ""}
       </Badge>
     );
   }
-  return <Badge tone="success">Public domain</Badge>;
+  return <Badge tone="success">🆓 パブリックドメイン</Badge>;
 }
 
 export default async function LibraryPage() {
@@ -54,9 +54,9 @@ export default async function LibraryPage() {
   return (
     <div>
       <SectionTitle
-        eyebrow="Library"
-        title="Public-domain asset library"
-        subtitle="Every asset is confirmed public domain in the listed markets and carries a provenance notice that travels with anything you publish."
+        eyebrow="図鑑 🖼️"
+        title="キャラ図鑑 ✨"
+        subtitle="すべての素材は対象地域でパブリックドメインであることを確認済み。公開する作品には出典表記が付いてまわります。"
       />
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -72,7 +72,7 @@ export default async function LibraryPage() {
             />
 
             <div className="flex items-start justify-between gap-2">
-              <h3 className="font-semibold text-ink">{asset.label}</h3>
+              <h3 className="font-extrabold text-ink">{asset.label}</h3>
               <Badge tone="accent">{KIND_LABEL[asset.kind] ?? asset.kind}</Badge>
             </div>
 
@@ -88,7 +88,7 @@ export default async function LibraryPage() {
             <div className="mt-4 flex flex-wrap gap-1.5">
               {asset.publicDomainIn.map((market) => (
                 <Badge key={market} tone="success">
-                  PD in {market}
+                  {market}でPD
                 </Badge>
               ))}
             </div>

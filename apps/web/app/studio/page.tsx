@@ -21,9 +21,9 @@ export default async function StudioPage() {
   return (
     <div>
       <SectionTitle
-        eyebrow="Studio"
-        title="Create a daily-use app"
-        subtitle="Pick a template and an asset, browse its images and 3D models, describe your app, then generate and publish."
+        eyebrow="スタジオ ✨"
+        title="アプリをつくろう 🎨"
+        subtitle="テンプレートと素材を選んで、画像や3Dモデルをチェック。アイデアを書いたら「つくる」をタップ、そのまま公開できます。"
       />
       <StudioClient
         templates={templates}

@@ -30,7 +30,7 @@ function currentWeek(today: Date): Date[] {
   });
 }
 
-const DAY_LABELS = ["M", "T", "W", "T", "F", "S", "S"];
+const DAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
 
 type Checks = Record<string, Record<string, boolean>>; // date -> habitIndex -> done
 
@@ -128,11 +128,12 @@ export function HabitApp({ config }: { config: AppConfig }) {
         <img
           src={config.characterImageUrl}
           alt=""
-          className="h-16 w-16 shrink-0 rounded-2xl border object-cover"
+          className="h-16 w-16 shrink-0 rounded-3xl border-2 object-cover shadow-sm"
           style={{ borderColor: accent }}
         />
         <div>
-          <h1 className="text-xl font-extrabold leading-tight" style={{ color: accent }}>
+          <p className="text-xs font-bold text-neutral-400">こんにちは！今日もコツコツ ✨</p>
+          <h1 className="text-xl font-black leading-tight" style={{ color: accent }}>
             {config.title}
           </h1>
           <p className="mt-0.5 text-sm text-neutral-600">{config.encouragement}</p>
@@ -140,18 +141,23 @@ export function HabitApp({ config }: { config: AppConfig }) {
       </header>
 
       {/* Today's progress */}
-      <section className="mt-6 rounded-2xl p-4 text-white" style={{ backgroundColor: accent }}>
+      <section
+        className="mt-6 rounded-3xl p-5 text-white shadow-lg"
+        style={{
+          backgroundImage: `linear-gradient(135deg, ${accent} 0%, ${accent}cc 100%)`,
+        }}
+      >
         <div className="flex items-baseline justify-between">
-          <span className="text-sm/none opacity-90">Today</span>
-          <span className="text-sm font-semibold">🔥 {streak}-day streak</span>
+          <span className="text-sm font-bold opacity-90">今日の達成</span>
+          <span className="text-sm font-black">🔥 {streak}日連続</span>
         </div>
         <div className="mt-2 flex items-end justify-between">
-          <span className="text-3xl font-black">{todayPct}%</span>
-          <span className="text-sm opacity-90">
-            {todayDone}/{config.habits.length} habits
+          <span className="text-4xl font-black">{todayPct}%</span>
+          <span className="text-sm font-semibold opacity-90">
+            {todayDone}/{config.habits.length} 個
           </span>
         </div>
-        <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/30">
+        <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-white/30">
           <div className="h-full rounded-full bg-white transition-all" style={{ width: `${todayPct}%` }} />
         </div>
       </section>
@@ -191,8 +197,8 @@ export function HabitApp({ config }: { config: AppConfig }) {
       <footer className="mt-10 border-t pt-4 text-[11px] leading-relaxed text-neutral-400">
         <p>{config.provenanceNotice}</p>
         <p className="mt-1">
-          {config.aiAssisted ? "AI-assisted · " : ""}Made with PD Forge · Add to your home
-          screen to use it daily.
+          {config.aiAssisted ? "AI制作 · " : ""}PD Forgeでつくられました 💖 ·
+          ホーム画面に追加して毎日使おう！
         </p>
       </footer>
     </main>

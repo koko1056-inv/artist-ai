@@ -49,10 +49,10 @@ function isApiError(x: unknown): x is ApiError {
 const DEMO_MARKET = "US";
 
 const MEDIA_TABS: Array<{ id: "all" | MediaGroup; label: string }> = [
-  { id: "all", label: "All" },
-  { id: "images", label: "Images" },
-  { id: "threeD", label: "3D" },
-  { id: "audio", label: "Audio" },
+  { id: "all", label: "🌈 すべて" },
+  { id: "images", label: "🖼️ 画像" },
+  { id: "threeD", label: "🧩 3D" },
+  { id: "audio", label: "🎵 オーディオ" },
 ];
 
 /** A license badge for an asset tile / panel. */
@@ -60,11 +60,11 @@ function LicenseBadge({ asset }: { asset: PdAsset }) {
   if (asset.license.type === "licensed") {
     return (
       <Badge tone="warn">
-        Licensed{asset.license.partnerName ? ` · ${asset.license.partnerName}` : ""}
+        🔖 ライセンス{asset.license.partnerName ? ` · ${asset.license.partnerName}` : ""}
       </Badge>
     );
   }
-  return <Badge tone="success">Public domain</Badge>;
+  return <Badge tone="success">🆓 パブリックドメイン</Badge>;
 }
 
 function percent(rate: number): string {
@@ -139,11 +139,11 @@ export default function StudioClient({
 
   const eligibilityReason =
     eligibility.reason === "plan-not-allowed"
-      ? "This licensed IP is not available on your current plan."
+      ? "このライセンスIPは現在のプランではご利用いただけません。"
       : eligibility.reason === "expired"
-        ? "This license has expired."
+        ? "このライセンスは有効期限が切れています。"
         : eligibility.reason === "territory-not-allowed"
-          ? "This license is not available in your market."
+          ? "このライセンスはお住まいの地域ではご利用いただけません。"
           : null;
 
   async function onGenerate() {
@@ -166,13 +166,13 @@ export default function StudioClient({
       const data: unknown = await res.json();
       if (!res.ok || isApiError(data)) {
         setGenError(
-          isApiError(data) ? data.error.message : "Generation failed.",
+          isApiError(data) ? data.error.message : "生成に失敗しました。",
         );
         return;
       }
       setResult(data as GenerateResponse);
     } catch {
-      setGenError("Network error while generating.");
+      setGenError("生成中にネットワークエラーが発生しました。");
     } finally {
       setGenerating(false);
     }
@@ -198,12 +198,12 @@ export default function StudioClient({
       });
       const data: unknown = await res.json();
       if (!res.ok || isApiError(data)) {
-        setPubError(isApiError(data) ? data.error.message : "Publish failed.");
+        setPubError(isApiError(data) ? data.error.message : "公開に失敗しました。");
         return;
       }
       setPublished(data as PublishResponse);
     } catch {
-      setPubError("Network error while publishing.");
+      setPubError("公開中にネットワークエラーが発生しました。");
     } finally {
       setPublishing(false);
     }
@@ -218,12 +218,12 @@ export default function StudioClient({
       {/* Step 1: configure + generate */}
       <Card>
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-lg font-bold text-ink">1 · Build your app</h3>
+          <h3 className="text-lg font-extrabold text-ink">1 · つくる 🪄</h3>
           {/* Demo plan switcher: flip to Pro to unlock licensed IP. */}
           <div
-            className="inline-flex rounded-full border border-line bg-paper-2 p-0.5 text-xs font-semibold"
+            className="inline-flex rounded-full border border-line bg-paper-2 p-0.5 text-xs font-bold"
             role="group"
-            aria-label="Demo plan"
+            aria-label="プラン切り替え"
           >
             {(["basic", "pro"] as const).map((p) => (
               <button
@@ -233,26 +233,27 @@ export default function StudioClient({
                 aria-pressed={planId === p}
                 className={`rounded-full px-3 py-1 capitalize transition-colors ${
                   planId === p
-                    ? "bg-brand text-white"
+                    ? "bg-grad-brand text-white shadow-sm"
                     : "text-ink-soft hover:text-brand"
                 }`}
               >
-                {p}
+                {p === "pro" ? "Pro ⭐" : "Basic"}
               </button>
             ))}
           </div>
         </div>
         <p className="mt-1 text-xs text-ink-soft">
-          Demo plan: <span className="font-semibold capitalize">{planId}</span>.
-          Licensed IP requires Pro or above.
+          現在のプラン:{" "}
+          <span className="font-bold capitalize text-brand">{planId}</span>。
+          ライセンスIPの利用にはPro以上が必要です。
         </p>
 
-        <label className="mt-4 block text-sm font-medium text-ink">
-          Template
+        <label className="mt-4 block text-sm font-bold text-ink">
+          🧩 テンプレート
           <select
             value={templateId}
             onChange={(e) => setTemplateId(e.target.value as TemplateId)}
-            className="mt-1 w-full rounded-lg border border-line bg-card px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-2xl border border-line bg-card px-3 py-2.5 text-sm"
           >
             {templates.map((t) => (
               <option key={t.id} value={t.id}>
@@ -266,7 +267,9 @@ export default function StudioClient({
         </p>
 
         <fieldset className="mt-4">
-          <legend className="text-sm font-medium text-ink">Choose an asset</legend>
+          <legend className="text-sm font-bold text-ink">
+            💖 キャラ・素材を選ぶ
+          </legend>
           <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {assets.map((a) => {
               const selected = a.id === assetId;
@@ -277,10 +280,10 @@ export default function StudioClient({
                   onClick={() => selectAsset(a.id)}
                   aria-pressed={selected}
                   title={a.provenanceNotice}
-                  className={`group overflow-hidden rounded-xl border text-left transition-all ${
+                  className={`group overflow-hidden rounded-2xl border text-left transition-all ${
                     selected
-                      ? "border-brand ring-2 ring-brand"
-                      : "border-line hover:border-brand/60"
+                      ? "border-brand ring-2 ring-brand shadow-md -translate-y-0.5"
+                      : "border-line hover:border-brand/60 hover:-translate-y-0.5"
                   }`}
                 >
                   <AssetThumb
@@ -289,7 +292,7 @@ export default function StudioClient({
                     alt={`${a.label} image`}
                     className="h-20 w-full object-cover"
                   />
-                  <span className="block px-2 pt-1.5 text-xs font-medium text-ink">
+                  <span className="block px-2 pt-1.5 text-xs font-bold text-ink">
                     {a.label}
                   </span>
                   <span className="block px-2 pb-1.5 pt-1">
@@ -303,16 +306,16 @@ export default function StudioClient({
 
         {/* License panel for the selected asset. */}
         {asset ? (
-          <div className="mt-4 rounded-lg border border-line bg-paper-2 p-4 text-sm">
+          <div className="mt-4 rounded-2xl border border-line bg-paper-2 p-4 text-sm">
             <div className="flex items-center justify-between gap-2">
-              <span className="font-semibold text-ink">{asset.label}</span>
+              <span className="font-bold text-ink">{asset.label}</span>
               <LicenseBadge asset={asset} />
             </div>
             {asset.license.type === "public-domain" ? (
               <div className="mt-2 space-y-1 text-ink-soft">
                 <p>{asset.provenanceNotice}</p>
-                <p className="font-medium text-[color:var(--color-success)]">
-                  Free to use — no royalty, no approval needed.
+                <p className="font-bold text-[color:var(--color-success)]">
+                  ✅ 自由に使えます — ロイヤリティも承認も不要！
                 </p>
               </div>
             ) : (
@@ -326,39 +329,39 @@ export default function StudioClient({
                       className="h-6 w-6 rounded object-contain"
                     />
                   ) : null}
-                  <span className="font-medium text-ink">
-                    {asset.license.partnerName ?? "Licensed partner"}
+                  <span className="font-bold text-ink">
+                    {asset.license.partnerName ?? "ライセンスパートナー"}
                   </span>
                 </div>
                 <ul className="ml-4 list-disc space-y-0.5">
-                  <li>Royalty rate: {percent(asset.license.royaltyRate)} of gross</li>
+                  <li>ロイヤリティ: 売上の {percent(asset.license.royaltyRate)}</li>
                   {asset.license.requiresApproval ? (
-                    <li>Requires approval before publishing</li>
+                    <li>公開前に承認が必要です</li>
                   ) : null}
                   <li>
-                    Allowed plans:{" "}
+                    利用可能プラン:{" "}
                     <span className="capitalize">
-                      {asset.license.allowedPlans.join(", ") || "—"}
+                      {asset.license.allowedPlans.join("、") || "—"}
                     </span>
                   </li>
-                  <li>Territories: {asset.license.territories.join(", ") || "—"}</li>
+                  <li>対象地域: {asset.license.territories.join("、") || "—"}</li>
                   {asset.license.expiresAt ? (
                     <li>
-                      Expires:{" "}
-                      {new Date(asset.license.expiresAt).toLocaleDateString("en-US")}
+                      有効期限:{" "}
+                      {new Date(asset.license.expiresAt).toLocaleDateString("ja-JP")}
                     </li>
                   ) : null}
                 </ul>
                 {!eligibility.eligible && eligibilityReason ? (
-                  <div className="rounded-md bg-[color:var(--color-warn)]/10 px-3 py-2 text-[color:var(--color-warn)]">
-                    <p className="font-medium">{eligibilityReason}</p>
+                  <div className="rounded-xl bg-[color:var(--color-warn)]/10 px-3 py-2 text-[color:var(--color-warn)]">
+                    <p className="font-bold">⚠️ {eligibilityReason}</p>
                     {eligibility.reason === "plan-not-allowed" ? (
                       <button
                         type="button"
                         onClick={() => setPlanId("pro")}
-                        className="mt-1 font-semibold underline hover:no-underline"
+                        className="mt-1 font-bold underline hover:no-underline"
                       >
-                        Switch to Pro to use licensed IP
+                        Proに切り替えてライセンスIPを解放 ⭐
                       </button>
                     ) : null}
                   </div>
@@ -372,14 +375,14 @@ export default function StudioClient({
         {asset ? (
           <div className="mt-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-ink">Media</span>
+              <span className="text-sm font-bold text-ink">🎞️ メディア</span>
               <span className="text-xs text-ink-soft">
                 {selectedMediaIds.length > 0
-                  ? `${selectedMediaIds.length} selected`
-                  : "Defaults to all media"}
+                  ? `${selectedMediaIds.length}件 選択中`
+                  : "未選択ならすべて使用"}
               </span>
             </div>
-            <div className="mt-2 inline-flex flex-wrap gap-1" role="tablist">
+            <div className="mt-2 inline-flex flex-wrap gap-1.5" role="tablist">
               {MEDIA_TABS.map((tab) => (
                 <button
                   key={tab.id}
@@ -387,9 +390,9 @@ export default function StudioClient({
                   role="tab"
                   aria-selected={mediaTab === tab.id}
                   onClick={() => setMediaTab(tab.id)}
-                  className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                  className={`rounded-full px-3 py-1 text-xs font-bold transition-colors ${
                     mediaTab === tab.id
-                      ? "bg-brand text-white"
+                      ? "bg-grad-brand text-white shadow-sm"
                       : "bg-paper-2 text-ink-soft hover:text-brand"
                   }`}
                 >
@@ -400,7 +403,7 @@ export default function StudioClient({
 
             {visibleMedia.length === 0 ? (
               <p className="mt-3 text-xs text-ink-soft">
-                No media in this category.
+                このカテゴリにはメディアがありません。
               </p>
             ) : (
               <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -417,32 +420,32 @@ export default function StudioClient({
           </div>
         ) : null}
 
-        <label className="mt-4 block text-sm font-medium text-ink">
-          Prompt
+        <label className="mt-4 block text-sm font-bold text-ink">
+          ✍️ プロンプト
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder={promptPlaceholder}
             rows={4}
-            className="mt-1 w-full rounded-lg border border-line bg-card px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-2xl border border-line bg-card px-3 py-2.5 text-sm"
           />
         </label>
         <p className="mt-1 text-xs text-ink-soft">
-          {prompt.trim().length}/2000 characters (minimum 10).
+          {prompt.trim().length}/2000文字（最低10文字）
         </p>
 
         <button
           type="button"
           onClick={onGenerate}
           disabled={!canGenerate}
-          className="mt-4 w-full rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-strong disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn-grad mt-4 w-full px-4 py-3 text-sm font-extrabold disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {generating ? "Generating…" : generateLabel}
+          {generating ? "つくっています… 🪄" : `✨ ${generateLabel}`}
         </button>
 
         {!eligibility.eligible && eligibilityReason ? (
           <p className="mt-2 text-center text-xs text-[color:var(--color-warn)]">
-            Generation is disabled for this licensed asset on your current plan.
+            このプランではこのライセンス素材で生成できません。
           </p>
         ) : null}
 
@@ -453,49 +456,51 @@ export default function StudioClient({
         ) : null}
 
         {result ? (
-          <div className="mt-4 space-y-2 rounded-lg bg-paper-2 p-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Badge tone="accent">Tier: {result.modelTier}</Badge>
+          <div className="mt-4 space-y-2 rounded-2xl bg-paper-2 p-4 text-sm">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone="accent">ティア: {result.modelTier}</Badge>
               <Badge tone="neutral">
-                Est. cost{" "}
+                目安コスト{" "}
                 {formatMoney(money(result.estimatedCostMinor, "USD"))}
               </Badge>
               <Badge tone="success">
-                {result.remainingGenerations} generations left
+                残り{result.remainingGenerations}回 生成OK
               </Badge>
             </div>
 
             {/* The real, runnable app — open it or copy the shareable link. */}
             {result.appUrl ? (
-              <div className="rounded-lg border border-brand/30 bg-brand-soft/40 p-3">
-                <p className="font-semibold text-ink">Your app is live 🎉</p>
-                <p className="mt-0.5 text-xs text-ink-soft">
-                  A real, installable habit tracker that saves progress on the device.
+              <div className="rounded-2xl border border-brand/30 bg-grad-hero p-4">
+                <p className="text-lg font-extrabold text-ink">
+                  アプリが完成！🎉
                 </p>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  端末に進捗を保存できる、本物のインストール可能なアプリです。
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
                   <a
                     href={result.appUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-strong"
+                    className="btn-grad px-4 py-2 text-xs font-extrabold"
                   >
-                    Open your app ↗
+                    アプリを開く ↗
                   </a>
                   <button
                     type="button"
                     onClick={() => {
                       if (result.appUrl) void navigator.clipboard?.writeText(result.appUrl);
                     }}
-                    className="rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-ink hover:border-brand"
+                    className="rounded-full border border-line bg-card px-4 py-2 text-xs font-bold text-ink hover:border-brand"
                   >
-                    Copy share link
+                    🔗 共有リンクをコピー
                   </button>
                 </div>
               </div>
             ) : null}
 
             <p className="text-ink-soft">
-              <span className="font-semibold text-ink">Version:</span>{" "}
+              <span className="font-bold text-ink">バージョン:</span>{" "}
               {result.appVersionId}
             </p>
           </div>
@@ -504,43 +509,43 @@ export default function StudioClient({
 
       {/* Step 2: publish */}
       <Card>
-        <h3 className="text-lg font-bold text-ink">2 · Publish</h3>
+        <h3 className="text-lg font-extrabold text-ink">2 · 公開する 📦</h3>
         <p className="mt-1 text-sm text-ink-soft">
           {result
-            ? "Submit your generated app for automated review and listing."
-            : "Generate an app first, then publish it here."}
+            ? "つくったアプリを自動レビューに送って、ストアに掲載しましょう。"
+            : "まずはアプリをつくってから、ここで公開できます。"}
         </p>
 
-        <label className="mt-4 block text-sm font-medium text-ink">
-          Title
+        <label className="mt-4 block text-sm font-bold text-ink">
+          🏷️ タイトル
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Steamboat To-Do"
-            className="mt-1 w-full rounded-lg border border-line bg-card px-3 py-2 text-sm"
+            placeholder="蒸気船ウィリーのToDo"
+            className="mt-1 w-full rounded-2xl border border-line bg-card px-3 py-2.5 text-sm"
           />
         </label>
 
-        <label className="mt-4 block text-sm font-medium text-ink">
-          Summary
+        <label className="mt-4 block text-sm font-bold text-ink">
+          📝 概要
           <textarea
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
-            placeholder="A cheerful task manager that celebrates each finished task."
+            placeholder="タスクを終えるたびにお祝いしてくれる、楽しいタスク管理アプリ。"
             rows={3}
-            className="mt-1 w-full rounded-lg border border-line bg-card px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-2xl border border-line bg-card px-3 py-2.5 text-sm"
           />
         </label>
 
-        <label className="mt-4 block text-sm font-medium text-ink">
-          Price (USD)
+        <label className="mt-4 block text-sm font-bold text-ink">
+          💰 価格（USD）
           <input
             type="number"
             min="0"
             step="0.01"
             value={priceMajor}
             onChange={(e) => setPriceMajor(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line bg-card px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-2xl border border-line bg-card px-3 py-2.5 text-sm"
           />
         </label>
 
@@ -553,9 +558,9 @@ export default function StudioClient({
             title.trim().length < 3 ||
             summary.trim().length < 10
           }
-          className="mt-4 w-full rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn-grad mt-4 w-full px-4 py-3 text-sm font-extrabold disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {publishing ? "Publishing…" : publishLabel}
+          {publishing ? "公開しています… 📦" : `🚀 ${publishLabel}`}
         </button>
 
         {pubError ? (
@@ -565,48 +570,46 @@ export default function StudioClient({
         ) : null}
 
         {published ? (
-          <div className="mt-4 space-y-2 rounded-lg bg-paper-2 p-4 text-sm">
+          <div className="mt-4 space-y-2 rounded-2xl bg-paper-2 p-4 text-sm">
             <div className="flex flex-wrap items-center gap-2">
               {published.status === "published" ? (
-                <Badge tone="success">Published</Badge>
+                <Badge tone="success">🎉 公開済み</Badge>
               ) : published.status === "in-review" ? (
-                <Badge tone="warn">In review</Badge>
+                <Badge tone="warn">⏳ 審査中</Badge>
               ) : (
-                <Badge tone="warn">Rejected</Badge>
+                <Badge tone="warn">🚫 却下</Badge>
               )}
               {published.licenseType === "licensed" ? (
-                <Badge tone="warn">Licensed IP</Badge>
+                <Badge tone="warn">🔖 ライセンスIP</Badge>
               ) : null}
             </div>
             <p className="text-ink-soft">
-              <span className="font-semibold text-ink">Required notice:</span>{" "}
+              <span className="font-bold text-ink">必須の表記:</span>{" "}
               {published.requiredNotice}
             </p>
             {published.licenseType === "licensed" ? (
-              <div className="rounded-md bg-[color:var(--color-warn)]/10 px-3 py-2 text-[color:var(--color-warn)]">
+              <div className="rounded-xl bg-[color:var(--color-warn)]/10 px-3 py-2 text-[color:var(--color-warn)]">
                 {published.creditLine ? (
-                  <p className="font-medium">{published.creditLine}</p>
+                  <p className="font-bold">{published.creditLine}</p>
                 ) : null}
                 <p>
-                  Royalty rate: {percent(published.royaltyRate)} of gross to the
-                  rights holder.
+                  ロイヤリティ: 売上の {percent(published.royaltyRate)} を権利者へ。
                 </p>
                 <p>
-                  Licensed IP requires partner approval — this app is in review
-                  before it goes live.
+                  ライセンスIPはパートナーの承認が必要です。公開前にこのアプリは審査されます。
                 </p>
               </div>
             ) : null}
             {published.listingId ? (
               <p className="text-ink-soft">
-                <span className="font-semibold text-ink">Listing:</span>{" "}
+                <span className="font-bold text-ink">掲載ID:</span>{" "}
                 {published.listingId}
               </p>
             ) : null}
             {published.violations.length > 0 ? (
               <div>
-                <p className="font-semibold text-[color:var(--color-danger)]">
-                  Violations to resolve:
+                <p className="font-bold text-[color:var(--color-danger)]">
+                  解決が必要な項目:
                 </p>
                 <ul className="ml-4 list-disc text-ink-soft">
                   {published.violations.map((v) => (

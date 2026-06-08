@@ -25,43 +25,43 @@ export default async function MockCheckoutPage({
   return (
     <div className="mx-auto max-w-md">
       <Card>
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand">
-          Mock checkout
-        </p>
-        <h1 className="mt-1 text-2xl font-bold text-ink">
-          {translate(plan.nameKey as Parameters<typeof translate>[0])} plan
+        <span className="inline-block rounded-full bg-grad-brand px-3 py-1 text-xs font-extrabold text-white shadow-sm">
+          🧾 お支払い（デモ）
+        </span>
+        <h1 className="mt-3 text-2xl font-black text-ink">
+          {translate(plan.nameKey as Parameters<typeof translate>[0])} プラン ✨
         </h1>
         <p className="mt-2 text-ink-soft">
-          This is a placeholder for the Stripe web-checkout flow (no store fees). Real
-          Stripe is wired in later via the billing provider abstraction.
+          これは Stripe ウェブ決済フローの仮の画面です（ストア手数料なし）。
+          本物の Stripe は、後から課金プロバイダーの抽象レイヤー経由で つながります。
         </p>
-        <p className="mt-4 text-3xl font-extrabold text-ink">
+        <p className="mt-4 text-4xl font-black text-grad">
           {plan.id === "enterprise"
-            ? "Custom"
+            ? "個別見積もり"
             : plan.priceMinor === 0
-              ? "Free"
-              : `${formatMoney(money(plan.priceMinor, plan.currency))}/mo`}
+              ? "無料"
+              : `${formatMoney(money(plan.priceMinor, plan.currency))}/月`}
         </p>
 
         <div className="mt-6 flex gap-3">
           <button
             type="button"
-            className="flex-1 rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white"
+            className="btn-grad flex-1 rounded-full px-4 py-2.5 text-sm font-extrabold disabled:opacity-60"
             disabled
           >
-            Pay (mock)
+            お支払い（デモ）💳
           </button>
           <Link
             href="/pricing"
-            className="flex-1 rounded-full border border-line px-4 py-2.5 text-center text-sm font-semibold text-ink"
+            className="flex-1 rounded-full border border-line px-4 py-2.5 text-center text-sm font-semibold text-ink hover:border-brand"
           >
-            Back
+            もどる
           </Link>
         </div>
       </Card>
 
       <p className="mt-4 text-center text-xs text-ink-soft">
-        Available plans: {Object.values(PLANS).map((p) => p.id).join(", ")}
+        選べるプラン: {Object.values(PLANS).map((p) => p.id).join(", ")}
       </p>
     </div>
   );

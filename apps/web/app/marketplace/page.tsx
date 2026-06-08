@@ -5,7 +5,7 @@ import { loadListings } from "../../lib/data";
 export const dynamic = "force-dynamic";
 
 function price(priceMinor: number, currency: string): string {
-  if (priceMinor === 0) return "Free";
+  if (priceMinor === 0) return "無料";
   return formatMoney(money(priceMinor, currency as CurrencyCode));
 }
 
@@ -15,9 +15,9 @@ export default async function MarketplacePage() {
   return (
     <div>
       <SectionTitle
-        eyebrow="Marketplace"
-        title="Daily-use apps built on public-domain characters"
-        subtitle="Install into the host app or add to your home screen. Every app is provenance-labeled and AI-assisted."
+        eyebrow="マーケット 🎮"
+        title="パブリックドメインのキャラから生まれた毎日使えるアプリ 🔥"
+        subtitle="ホストアプリにインストールしたり、ホーム画面に追加したり。すべてのアプリに出典表記が付いて、AIがお手伝いしています。"
       />
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -43,11 +43,11 @@ export default async function MarketplacePage() {
               className="mb-4 h-36 w-full items-center justify-center rounded-[var(--radius-card)] border border-line bg-paper-2 text-xs text-ink-soft"
               style={{ display: listing.thumbnailUrl ? "none" : "flex" }}
             >
-              No preview
+              プレビューなし
             </div>
 
             <div className="flex items-start justify-between gap-2">
-              <h3 className="font-semibold text-ink">{listing.title}</h3>
+              <h3 className="font-extrabold text-ink">{listing.title}</h3>
               <span className="whitespace-nowrap text-sm font-bold text-brand">
                 {price(listing.priceMinor, listing.currency)}
               </span>
@@ -60,7 +60,7 @@ export default async function MarketplacePage() {
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
               {listing.licenseType === "licensed" ? (
                 <>
-                  <Badge tone="warn">Licensed</Badge>
+                  <Badge tone="warn">🔖 ライセンス</Badge>
                   {listing.creditLine ? (
                     <span className="text-xs text-ink-soft">
                       {listing.creditLine}
@@ -68,7 +68,7 @@ export default async function MarketplacePage() {
                   ) : null}
                 </>
               ) : (
-                <Badge tone="success">Public domain</Badge>
+                <Badge tone="success">🆓 パブリックドメイン</Badge>
               )}
             </div>
 
@@ -78,27 +78,27 @@ export default async function MarketplacePage() {
               {listing.aiAssisted ? (
                 <Badge tone="brand">{translate("provenance.aiAssisted")}</Badge>
               ) : null}
-              <Badge tone="accent">Provenance labeled</Badge>
+              <Badge tone="accent">🏷️ 出典表記あり</Badge>
             </div>
 
             <p className="mt-3 text-xs text-ink-soft">{listing.provenanceNotice}</p>
 
             <div className="mt-4 flex items-center justify-between border-t border-line pt-4">
               <div className="text-xs text-ink-soft">
-                <span className="font-semibold text-ink">
-                  {listing.installCount.toLocaleString("en-US")}
+                <span className="font-bold text-ink">
+                  {listing.installCount.toLocaleString("ja-JP")}
                 </span>{" "}
-                installs ·{" "}
-                <span className="font-semibold text-ink">
+                インストール ·{" "}
+                <span className="font-bold text-ink">
                   {listing.rating.toFixed(1)}
                 </span>{" "}
                 ★
               </div>
               <button
                 type="button"
-                className="rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-brand-strong"
+                className="btn-grad px-4 py-1.5 text-sm font-extrabold"
               >
-                {translate("marketplace.install")}
+                ⬇️ {translate("marketplace.install")}
               </button>
             </div>
           </Card>
