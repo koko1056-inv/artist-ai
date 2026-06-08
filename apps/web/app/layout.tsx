@@ -46,6 +46,12 @@ export default function RootLayout({
               >
                 Partners
               </Link>
+              <Link
+                href="/signin"
+                className="rounded-md px-1 py-0.5 transition-colors hover:text-brand"
+              >
+                Account
+              </Link>
             </div>
             <Link
               href="/pricing"

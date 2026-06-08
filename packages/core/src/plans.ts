@@ -95,6 +95,11 @@ export function getPlan(id: PlanId): Plan {
   return PLANS[id];
 }
 
+/** Whether a plan can publish & sell on the marketplace (i.e. a paid subscription). */
+export function isPayingPlan(id: PlanId): boolean {
+  return PLANS[id].limits.canSell;
+}
+
 /** Whether a model tier is allowed under a plan. */
 export function isTierAllowed(plan: Plan, tier: ModelTier): boolean {
   const order: ModelTier[] = ["small", "standard", "premium"];

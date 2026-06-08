@@ -64,6 +64,28 @@ export function HabitApp({ config }: { config: AppConfig }) {
     }
   }, [checks, key, loaded]);
 
+  // Anonymous daily "active" ping for the WAU metric (no PII; once per device per day).
+  useEffect(() => {
+    try {
+      let anonId = localStorage.getItem("pdforge:anon");
+      if (!anonId) {
+        anonId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+        localStorage.setItem("pdforge:anon", anonId);
+      }
+      const flag = `pdforge:tracked:${key}:${todayIso}`;
+      if (localStorage.getItem(flag)) return;
+      localStorage.setItem(flag, "1");
+      void fetch("/api/track", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ appId: key, anonId, day: todayIso }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {
+      /* tracking is best-effort */
+    }
+  }, [key, todayIso]);
+
   function toggle(dateIso: string, habitIndex: number) {
     setChecks((prev) => {
       const day = { ...(prev[dateIso] ?? {}) };

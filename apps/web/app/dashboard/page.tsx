@@ -3,6 +3,7 @@ import {
   canGenerate,
   formatMoney,
   getPlan,
+  isPayingPlan,
   MARKETPLACE_TAKE_RATE,
   money,
   splitSale,
@@ -13,12 +14,27 @@ import {
 } from "@pd/core";
 import { Badge, Card, SectionTitle } from "../../components/ui";
 import { SAMPLE_PURCHASES } from "../../lib/sample-data";
+import { getSession } from "../../lib/session";
+import { activeAppCount, totalWau } from "../../lib/usage-store";
 
-export default function DashboardPage() {
-  // Demo creator: a Pro subscriber with a partially-used quota window.
-  const plan = getPlan("pro");
-  const usage: UsageWindow = { generationsUsed: 137, aiSpendMinor: 820 };
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+  const session = await getSession();
+  const planId = session?.plan ?? "free";
+  const paying = isPayingPlan(planId);
+
+  // Usage window: demo figures (replace with the subscription's metered window).
+  const plan = getPlan(planId);
+  const usage: UsageWindow = paying
+    ? { generationsUsed: 137, aiSpendMinor: 820 }
+    : { generationsUsed: 2, aiSpendMinor: 0 };
   const decision = canGenerate(plan, usage);
+
+  // Audience (north-star): weekly active end users across published apps. Dev-grade,
+  // in-memory and ephemeral — production swaps for a durable analytics pipeline.
+  const wau = totalWau();
+  const liveApps = activeAppCount();
 
   const quota = plan.limits.generationsPerMonth;
   const quotaPct = Math.min(100, Math.round((usage.generationsUsed / quota) * 100));
@@ -75,8 +91,98 @@ export default function DashboardPage() {
       <SectionTitle
         eyebrow="Dashboard"
         title="Your creator overview"
-        subtitle="Plan, usage against your cost guardrails, and marketplace revenue."
+        subtitle="Plan, audience, payouts, usage against your cost guardrails, and revenue."
       />
+
+      {/* Account / subscription state */}
+      {!session ? (
+        <Card className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-ink">
+            You&apos;re browsing as a guest. Sign in to subscribe, publish, and get paid.
+          </p>
+          <a
+            href="/signin"
+            className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-strong"
+          >
+            Sign in
+          </a>
+        </Card>
+      ) : !paying ? (
+        <Card className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-ink">
+            Signed in as <span className="font-semibold">{session.email}</span> on the Free
+            plan. Subscribe to publish and sell your apps.
+          </p>
+          <a
+            href="/pricing"
+            className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-strong"
+          >
+            Choose a plan
+          </a>
+        </Card>
+      ) : (
+        <Card className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-ink">
+            Signed in as <span className="font-semibold">{session.email}</span> ·{" "}
+            <span className="capitalize font-semibold">{session.plan}</span> plan ·
+            publishing enabled.
+          </p>
+          <form action="/api/auth/signout" method="post">
+            <button className="rounded-full border border-line px-4 py-2 text-sm font-semibold text-ink hover:border-brand">
+              Sign out
+            </button>
+          </form>
+        </Card>
+      )}
+
+      {/* Audience (north-star) + payouts */}
+      <div className="grid gap-5 md:grid-cols-2">
+        <Card>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
+            Audience · weekly active users
+          </p>
+          <p className="mt-1 text-2xl font-extrabold text-ink">
+            {wau.toLocaleString("en-US")}
+          </p>
+          <p className="mt-1 text-sm text-ink-soft">
+            Across {liveApps.toLocaleString("en-US")} live app
+            {liveApps === 1 ? "" : "s"}. This is the metric that matters: are published apps
+            actually used daily?
+          </p>
+          <p className="mt-2 text-xs text-ink-soft">
+            Dev-grade, in-memory counter — open a published app to see it move; production
+            uses a durable analytics pipeline.
+          </p>
+        </Card>
+
+        <Card>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
+            Payouts
+          </p>
+          {session?.payoutConnected ? (
+            <>
+              <p className="mt-1 text-2xl font-extrabold text-ink">Connected</p>
+              <p className="mt-1 text-sm text-ink-soft">
+                Earnings are released to your connected account on the payout schedule.
+              </p>
+              <Badge tone="success">Ready to receive payouts</Badge>
+            </>
+          ) : (
+            <>
+              <p className="mt-1 text-2xl font-extrabold text-ink">Not connected</p>
+              <p className="mt-1 text-sm text-ink-soft">
+                Connect a payout account to receive your share of marketplace sales.
+              </p>
+              <a
+                href={session ? "/api/payouts/connect" : "/signin"}
+                className="mt-3 inline-block rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
+              >
+                Connect payouts
+              </a>
+            </>
+          )}
+        </Card>
+      </div>
 
       <div className="grid gap-5 md:grid-cols-3">
         <Card>
@@ -87,8 +193,10 @@ export default function DashboardPage() {
             {translate(plan.nameKey as Parameters<typeof translate>[0])}
           </p>
           <p className="mt-1 text-sm text-ink-soft">
-            {formatMoney(money(plan.priceMinor, plan.currency))}/mo · sells on
-            marketplace
+            {plan.priceMinor > 0
+              ? `${formatMoney(money(plan.priceMinor, plan.currency))}/mo`
+              : "Free"}{" "}
+            · {paying ? "sells on marketplace" : "publishing locked"}
           </p>
           <div className="mt-3">
             {decision.allowed ? (

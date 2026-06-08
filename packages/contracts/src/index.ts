@@ -183,3 +183,14 @@ export const apiErrorSchema = z.object({
   }),
 });
 export type ApiError = z.infer<typeof apiErrorSchema>;
+
+/**
+ * POST /api/track — an anonymous daily "active" ping from a published app, used to measure
+ * the north-star metric (weekly active end users). No PII: a random per-device id only.
+ */
+export const trackEventSchema = z.object({
+  appId: z.string().min(1).max(120),
+  anonId: z.string().min(1).max(64),
+  day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+export type TrackEvent = z.infer<typeof trackEventSchema>;

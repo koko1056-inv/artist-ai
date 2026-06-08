@@ -4,8 +4,10 @@ import {
   publishRequestSchema,
   type PublishResponse,
 } from "@pd/contracts";
+import { isPayingPlan } from "@pd/core";
 import { apiError, apiOk } from "../../../lib/api";
 import { SAMPLE_STYLE_GUIDES } from "../../../lib/sample-data";
+import { currentPlan } from "../../../lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -81,6 +83,15 @@ export async function POST(req: Request): Promise<Response> {
     return apiError("invalid_request", parsed.error.issues[0]?.message ?? "Invalid request.");
   }
   const { appVersionId, title, summary } = parsed.data;
+
+  // Publishing & selling require an active paid subscription.
+  if (!isPayingPlan(await currentPlan())) {
+    return apiError(
+      "subscription_required",
+      "Publishing requires an active subscription. Choose a plan to publish and sell.",
+      402,
+    );
+  }
 
   const { styleGuide, license, terms } = await resolveLicense(appVersionId);
 

@@ -88,11 +88,17 @@ export default function PricingPage() {
                   href={
                     plan.id === "enterprise"
                       ? "mailto:sales@pdforge.dev"
-                      : `/checkout/mock?plan=${plan.id}`
+                      : plan.id === "free"
+                        ? "/signin"
+                        : `/api/billing/activate?plan=${plan.id}`
                   }
                   className="block rounded-full bg-brand px-4 py-2 text-center text-sm font-semibold text-white transition-colors hover:bg-brand-strong"
                 >
-                  {plan.id === "enterprise" ? "Contact sales" : "Choose plan"}
+                  {plan.id === "enterprise"
+                    ? "Contact sales"
+                    : plan.id === "free"
+                      ? "Sign in"
+                      : "Choose plan"}
                 </a>
               </div>
             </Card>

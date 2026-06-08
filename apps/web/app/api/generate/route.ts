@@ -20,6 +20,7 @@ import {
 import { apiError, apiOk } from "../../../lib/api";
 import { loadAsset, loadStyleGuide } from "../../../lib/data";
 import { buildHabitConfig, encodeAppConfig } from "../../../lib/app-config";
+import { currentPlan } from "../../../lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -49,8 +50,9 @@ export async function POST(req: Request): Promise<Response> {
     return apiError("asset_not_found", `Unknown asset "${assetId}".`, 404);
   }
 
-  // Demo user plan + usage. Replace with the authenticated subscription later.
-  const planId: PlanId = "basic";
+  // Plan from the signed-in session (free when signed out); usage from the subscription
+  // later. Generating is allowed on the free plan; publishing/selling requires a paid plan.
+  const planId: PlanId = await currentPlan();
   const plan = getPlan(planId);
   const usage: UsageWindow = { generationsUsed: 0, aiSpendMinor: 0 };
 
