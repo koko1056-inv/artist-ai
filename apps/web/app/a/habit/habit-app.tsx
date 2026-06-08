@@ -34,7 +34,14 @@ const DAY_LABELS = ["月", "火", "水", "木", "金", "土", "日"];
 
 type Checks = Record<string, Record<string, boolean>>; // date -> habitIndex -> done
 
-export function HabitApp({ config }: { config: AppConfig }) {
+export function HabitApp({
+  config,
+  preview = false,
+}: {
+  config: AppConfig;
+  /** When true (studio live preview), suppress the WAU ping so edits don't inflate metrics. */
+  preview?: boolean;
+}) {
   const key = useMemo(() => storageKey(config), [config]);
   const today = useMemo(() => new Date(), []);
   const week = useMemo(() => currentWeek(today), [today]);
@@ -66,6 +73,7 @@ export function HabitApp({ config }: { config: AppConfig }) {
 
   // Anonymous daily "active" ping for the WAU metric (no PII; once per device per day).
   useEffect(() => {
+    if (preview) return; // studio preview must not count toward WAU
     try {
       let anonId = localStorage.getItem("pdforge:anon");
       if (!anonId) {
@@ -84,7 +92,7 @@ export function HabitApp({ config }: { config: AppConfig }) {
     } catch {
       /* tracking is best-effort */
     }
-  }, [key, todayIso]);
+  }, [key, todayIso, preview]);
 
   function toggle(dateIso: string, habitIndex: number) {
     setChecks((prev) => {

@@ -21,6 +21,7 @@ import type {
 import { Badge, Card } from "../../components/ui";
 import { AssetThumb } from "../../components/asset-thumb";
 import { ModelViewer } from "../../components/model-viewer";
+import { AppBuilder } from "../../components/app-builder";
 
 interface TemplateOption {
   id: TemplateId;
@@ -468,15 +469,13 @@ export default function StudioClient({
               </Badge>
             </div>
 
-            {/* The real, runnable app — open it or copy the shareable link. */}
-            {result.appUrl ? (
+            {/* Free-form builder: edit the AI draft (name, color, message, habits) with a
+                live preview; the share link updates instantly. Falls back to a simple link. */}
+            {result.config ? (
+              <AppBuilder initialConfig={result.config} />
+            ) : result.appUrl ? (
               <div className="rounded-2xl border border-brand/30 bg-grad-hero p-4">
-                <p className="text-lg font-extrabold text-ink">
-                  アプリが完成！🎉
-                </p>
-                <p className="mt-0.5 text-xs text-ink-soft">
-                  端末に進捗を保存できる、本物のインストール可能なアプリです。
-                </p>
+                <p className="text-lg font-extrabold text-ink">アプリが完成！🎉</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <a
                     href={result.appUrl}
@@ -486,15 +485,6 @@ export default function StudioClient({
                   >
                     アプリを開く ↗
                   </a>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (result.appUrl) void navigator.clipboard?.writeText(result.appUrl);
-                    }}
-                    className="rounded-full border border-line bg-card px-4 py-2 text-xs font-bold text-ink hover:border-brand"
-                  >
-                    🔗 共有リンクをコピー
-                  </button>
                 </div>
               </div>
             ) : null}

@@ -97,8 +97,9 @@ export async function POST(req: Request): Promise<Response> {
   // one template (habit tracker); the runtime at /a/habit turns this into a working,
   // data-persisting PWA. (A real LLM later returns this config behind the same interface.)
   let appUrl: string | undefined;
+  let config: ReturnType<typeof buildHabitConfig> | undefined;
   if (templateId === "habit-tracker") {
-    const config = buildHabitConfig({ asset, prompt });
+    config = buildHabitConfig({ asset, prompt });
     const base = process.env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin;
     appUrl = `${base}/a/habit?c=${encodeAppConfig(config)}`;
   }
@@ -107,6 +108,7 @@ export async function POST(req: Request): Promise<Response> {
     appVersionId: `av_${Math.random().toString(36).slice(2, 10)}`,
     bundleUrl: generation.bundleUrl,
     appUrl,
+    config,
     modelTier: model.tier,
     estimatedCostMinor: generation.costMinor,
     remainingGenerations: Math.max(0, decision.remainingGenerations - 1),
