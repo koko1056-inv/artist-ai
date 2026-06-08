@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="PD Forge">
+  <rect width="192" height="192" rx="40" fill="#1f6b5a"/>
+  <!-- spark / forge mark -->
+  <g fill="#f1e7cf">
+    <path d="M96 36 l16 44 44 16 -44 16 -16 44 -16 -44 -44 -16 44 -16 z"/>
+  </g>
+  <circle cx="96" cy="96" r="14" fill="#1f6b5a"/>
+</svg>

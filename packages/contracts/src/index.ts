@@ -69,12 +69,36 @@ export const generateResponseSchema = z.object({
   appVersionId: z.string(),
   /** Sandboxed bundle entry the host app / PWA loads. */
   bundleUrl: z.string().url(),
+  /** Shareable URL of the real, runnable app (the published PWA). */
+  appUrl: z.string().optional(),
   modelTier: modelTierSchema,
   /** Estimated cost of this generation in USD minor units (for metering). */
   estimatedCostMinor: z.number().int().nonnegative(),
   remainingGenerations: z.number().int().nonnegative(),
 });
 export type GenerateResponse = z.infer<typeof generateResponseSchema>;
+
+/**
+ * The configuration that drives a real, runnable app. The MVP ships ONE template — a habit
+ * tracker — rendered by the platform runtime and persisted on the user's device. AI (or the
+ * deterministic fallback) turns a prompt into this config; the runtime turns the config into
+ * a working app. Encoded into the shareable app URL so it works without a database.
+ */
+export const appConfigSchema = z.object({
+  template: z.literal("habit-tracker"),
+  title: z.string().min(1).max(80),
+  characterId: z.string(),
+  characterImageUrl: z.string(),
+  /** Accent color (hex) for theming. */
+  accent: z.string(),
+  /** A short in-character line of encouragement. */
+  encouragement: z.string(),
+  /** Initial habits to track (kept short and daily-use). */
+  habits: z.array(z.string().min(1).max(60)).min(1).max(8),
+  provenanceNotice: z.string(),
+  aiAssisted: z.boolean(),
+});
+export type AppConfig = z.infer<typeof appConfigSchema>;
 
 /**
  * An asset as exposed to clients. Carries its selectable media and its license info.

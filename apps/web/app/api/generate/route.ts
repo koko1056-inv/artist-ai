@@ -19,6 +19,7 @@ import {
 } from "@pd/contracts";
 import { apiError, apiOk } from "../../../lib/api";
 import { loadAsset, loadStyleGuide } from "../../../lib/data";
+import { buildHabitConfig, encodeAppConfig } from "../../../lib/app-config";
 
 export const dynamic = "force-dynamic";
 
@@ -90,9 +91,20 @@ export async function POST(req: Request): Promise<Response> {
   });
   void review; // surfaced at publish time; recorded here in production for audit.
 
+  // Build the REAL, runnable app config and encode it into a shareable URL. The MVP ships
+  // one template (habit tracker); the runtime at /a/habit turns this into a working,
+  // data-persisting PWA. (A real LLM later returns this config behind the same interface.)
+  let appUrl: string | undefined;
+  if (templateId === "habit-tracker") {
+    const config = buildHabitConfig({ asset, prompt });
+    const base = process.env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin;
+    appUrl = `${base}/a/habit?c=${encodeAppConfig(config)}`;
+  }
+
   const response: GenerateResponse = {
     appVersionId: `av_${Math.random().toString(36).slice(2, 10)}`,
     bundleUrl: generation.bundleUrl,
+    appUrl,
     modelTier: model.tier,
     estimatedCostMinor: generation.costMinor,
     remainingGenerations: Math.max(0, decision.remainingGenerations - 1),

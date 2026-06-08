@@ -464,10 +464,36 @@ export default function StudioClient({
                 {result.remainingGenerations} generations left
               </Badge>
             </div>
-            <p className="break-all text-ink-soft">
-              <span className="font-semibold text-ink">Bundle:</span>{" "}
-              {result.bundleUrl}
-            </p>
+
+            {/* The real, runnable app — open it or copy the shareable link. */}
+            {result.appUrl ? (
+              <div className="rounded-lg border border-brand/30 bg-brand-soft/40 p-3">
+                <p className="font-semibold text-ink">Your app is live 🎉</p>
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  A real, installable habit tracker that saves progress on the device.
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <a
+                    href={result.appUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-strong"
+                  >
+                    Open your app ↗
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (result.appUrl) void navigator.clipboard?.writeText(result.appUrl);
+                    }}
+                    className="rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-ink hover:border-brand"
+                  >
+                    Copy share link
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
             <p className="text-ink-soft">
               <span className="font-semibold text-ink">Version:</span>{" "}
               {result.appVersionId}
