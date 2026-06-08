@@ -1,31 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap");
 @import "tailwindcss";
 
 /*
- * PD Forge design tokens — a warm, professional palette.
- * Tailwind v4 reads `@theme` tokens and generates utilities (bg-*, text-*, etc.).
+ * PD Forge design tokens — a bright, playful, "Japanese pop app" palette: vivid pink &
+ * purple gradients, candy accents, rounded everything. Token names are kept stable so
+ * existing utilities (bg-brand, text-ink, border-line, …) just get a more colorful look.
  */
 @theme {
-  --color-ink: #1f1a17;
-  --color-ink-soft: #4b423c;
-  --color-paper: #fbf7f1;
-  --color-paper-2: #f3ece1;
+  --color-ink: #2a2540;
+  --color-ink-soft: #6b6385;
+  --color-paper: #fff7fb;
+  --color-paper-2: #ffe9f4;
   --color-card: #ffffff;
-  --color-line: #e7ddcf;
+  --color-line: #f0e6f7;
 
-  --color-brand: #c1571e;
-  --color-brand-strong: #9c4316;
-  --color-brand-soft: #f6e3d4;
-  --color-accent: #2f6f6a;
-  --color-accent-soft: #dbeae7;
+  --color-brand: #ff4f9a;
+  --color-brand-strong: #e63b86;
+  --color-brand-soft: #ffe1ef;
 
-  --color-success: #2e7d4f;
-  --color-warn: #b07b00;
-  --color-danger: #b3261e;
+  --color-accent: #7c5cff;
+  --color-accent-soft: #ece6ff;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
+  /* Candy accent palette for playful blocks/badges. */
+  --color-pink: #ff5fa2;
+  --color-purple: #7c5cff;
+  --color-mint: #12c8b6;
+  --color-mint-soft: #d4f7f2;
+  --color-sun: #ffc83d;
+  --color-sun-soft: #fff0c9;
+  --color-sky: #38b6ff;
+  --color-sky-soft: #dcf0ff;
 
-  --radius-card: 0.875rem;
+  --color-success: #16b364;
+  --color-warn: #f59e0b;
+  --color-danger: #f43f5e;
+
+  --font-sans: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN",
+    "Hiragino Kaku Gothic ProN", "Noto Sans JP", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --radius-card: 1.25rem;
+
+  /* Gradients */
+  --grad-brand: linear-gradient(135deg, #ff5fa2 0%, #ff8a5b 100%);
+  --grad-hero: linear-gradient(135deg, #ff5fa2 0%, #7c5cff 52%, #38b6ff 100%);
+  --grad-mint: linear-gradient(135deg, #12c8b6 0%, #38b6ff 100%);
+  --grad-sun: linear-gradient(135deg, #ffc83d 0%, #ff8a5b 100%);
 }
 
 :root {
@@ -40,12 +60,75 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Mobile-first base sizing. */
+/* Soft candy glow in the page background. */
 body {
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.6;
+  background-image:
+    radial-gradient(60rem 30rem at 110% -10%, #ffe1ef 0%, transparent 60%),
+    radial-gradient(50rem 28rem at -10% 0%, #ece6ff 0%, transparent 55%),
+    radial-gradient(40rem 24rem at 50% 120%, #dcf0ff 0%, transparent 60%);
+  background-attachment: fixed;
 }
 
 a {
   color: inherit;
+}
+
+/* ---- Playful utilities ---- */
+
+/* Gradient text (for hero headlines). */
+.text-grad {
+  background-image: var(--grad-hero);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Gradient pill button with a soft colorful shadow + bounce. */
+.btn-grad {
+  background-image: var(--grad-brand);
+  color: #fff;
+  box-shadow: 0 12px 26px -10px rgba(255, 79, 154, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+.btn-grad:hover {
+  transform: translateY(-2px);
+  filter: saturate(1.05);
+  box-shadow: 0 16px 30px -10px rgba(255, 79, 154, 0.7);
+}
+.btn-grad:active {
+  transform: translateY(0);
+}
+
+/* Colorful soft card shadow + gentle lift on hover. */
+.card-pop {
+  box-shadow: 0 14px 34px -18px rgba(124, 92, 255, 0.4);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.card-pop:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 44px -18px rgba(124, 92, 255, 0.5);
+}
+
+.bg-grad-hero {
+  background-image: var(--grad-hero);
+}
+.bg-grad-brand {
+  background-image: var(--grad-brand);
+}
+.bg-grad-mint {
+  background-image: var(--grad-mint);
+}
+.bg-grad-sun {
+  background-image: var(--grad-sun);
+}
+
+/* Floaty sparkle animation for hero accents. */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(6deg); }
+}
+.animate-floaty {
+  animation: floaty 4s ease-in-out infinite;
 }

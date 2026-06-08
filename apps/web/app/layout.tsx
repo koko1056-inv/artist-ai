@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body className="min-h-screen bg-paper text-ink">
         <header className="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur">
           <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">

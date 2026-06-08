@@ -1,11 +1,13 @@
 import { en, type MessageKey } from "./en.js";
+import { ja } from "./ja.js";
 
-export type Locale = "en";
+export type Locale = "en" | "ja";
 export type { MessageKey };
 
-const CATALOGS: Record<Locale, Record<string, string>> = { en };
+const CATALOGS: Record<Locale, Record<string, string>> = { en, ja };
 
-export const DEFAULT_LOCALE: Locale = "en";
+/** Japanese-first product. Switch per-request later if we add a locale selector. */
+export const DEFAULT_LOCALE: Locale = "ja";
 
 /**
  * Translate a key for a locale, interpolating `{name}` placeholders. Falls back to the
@@ -17,7 +19,7 @@ export function translate(
   locale: Locale = DEFAULT_LOCALE,
 ): string {
   const catalog = CATALOGS[locale] ?? CATALOGS[DEFAULT_LOCALE];
-  let str = catalog[key] ?? CATALOGS[DEFAULT_LOCALE][key] ?? key;
+  let str = catalog[key] ?? CATALOGS[DEFAULT_LOCALE][key] ?? en[key] ?? key;
   if (vars) {
     for (const [k, v] of Object.entries(vars)) {
       str = str.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
@@ -26,7 +28,7 @@ export function translate(
   return str;
 }
 
-/** Bind a locale once and reuse, e.g. `const t = makeT("en"); t("nav.studio")`. */
+/** Bind a locale once and reuse, e.g. `const t = makeT("ja"); t("nav.studio")`. */
 export function makeT(locale: Locale = DEFAULT_LOCALE) {
   return (key: MessageKey, vars?: Record<string, string | number>) =>
     translate(key, vars, locale);
